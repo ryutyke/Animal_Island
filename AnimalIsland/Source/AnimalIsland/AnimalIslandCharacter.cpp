@@ -52,8 +52,8 @@ AAnimalIslandCharacter::AAnimalIslandCharacter()
 
 	Hp = 100;
 	bIsFeedCool = false;
-	FeedCooltimeCnt = 0.0f;
 	FeedCooltime = 3.0f;
+	FeedCooltimeCnt = FeedCooltime;
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionFeedRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Feed.IA_Feed'"));
 	if (nullptr != InputActionFeedRef.Object)
@@ -72,20 +72,23 @@ void AAnimalIslandCharacter::Tick(float DeltaTime)
 {
 	if (bIsFeedCool)
 	{
-		FeedCooltimeCnt += DeltaTime;
-		if (FeedCooltimeCnt > FeedCooltime)
+		FeedCooltimeCnt -= DeltaTime;
+		if (FeedCooltimeCnt <= 0)
 		{
 			bIsFeedCool = false;
-			FeedCooltimeCnt = 0.0f;
+			FeedCooltimeCnt = 0.f;
 		}
 	}
 }
 
 void AAnimalIslandCharacter::Feed()
 {
+	// 조준선 and 카메라 방향으로 회전 후 쏘는 거 또는 그냥 조준선 없이 캐릭터 방향으로 그대로 쏘는 거
+	
 	// 쿨타임
 	if (!bIsFeedCool)
 	{
+		FeedCooltimeCnt = FeedCooltime;
 		bIsFeedCool = true;
 		GetWorld()->SpawnActor<AActor>(FeedBPClass, GetActorLocation(), GetActorRotation());
 	}

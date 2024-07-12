@@ -77,10 +77,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> FeedBPClass;
 
-	UPROPERTY(EditDefaultsOnly, Category = Cooltime)
+	UPROPERTY(BlueprintReadOnly ,EditDefaultsOnly, Category = Cooltime)
 	float FeedCooltime;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = Cooltime)
 	float FeedCooltimeCnt;
 
 	UPROPERTY()
