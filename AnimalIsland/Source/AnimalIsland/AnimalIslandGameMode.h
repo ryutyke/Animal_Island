@@ -13,6 +13,9 @@ class AAnimalIslandGameMode : public AGameModeBase
 
 public:
 	AAnimalIslandGameMode();
+
+	UFUNCTION(BlueprintCallable)
+	void Restart();
 };
 
 

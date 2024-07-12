@@ -4,17 +4,17 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "CharacterHUD.generated.h"
+#include "StartMenu.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class ANIMALISLAND_API UCharacterHUD : public UUserWidget
+class ANIMALISLAND_API UStartMenu : public UUserWidget
 {
 	GENERATED_BODY()
 
 public:
-	UCharacterHUD(const FObjectInitializer& ObjectInitializer);
+	UStartMenu(const FObjectInitializer& ObjectInitializer);
 	
 };

@@ -3,6 +3,7 @@
 #include "AnimalIslandGameMode.h"
 #include "AnimalIslandCharacter.h"
 #include "UObject/ConstructorHelpers.h"
+#include "Kismet/GameplayStatics.h"
 
 AAnimalIslandGameMode::AAnimalIslandGameMode()
 {
@@ -11,5 +12,15 @@ AAnimalIslandGameMode::AAnimalIslandGameMode()
 	if (PlayerPawnBPClass.Class != NULL)
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
+	}
+}
+
+void AAnimalIslandGameMode::Restart()
+{
+	UWorld* World = GetWorld();
+	if (World)
+	{
+		FName CurrentLevelName = FName(World->GetMapName());
+		UGameplayStatics::OpenLevel(World, CurrentLevelName);
 	}
 }
