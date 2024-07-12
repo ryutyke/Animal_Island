@@ -43,7 +43,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Speed")
 	float MoveSpeed;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hp")
+	float MaxHp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hp")
+	float CurrentHp;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Feed")
+	bool IsFed;
 
 private:
 	UPROPERTY()
