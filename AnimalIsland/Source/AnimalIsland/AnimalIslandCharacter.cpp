@@ -49,6 +49,50 @@ AAnimalIslandCharacter::AAnimalIslandCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	Hp = 100;
+	bIsFeedCool = false;
+	FeedCooltime = 3.0f;
+	FeedCooltimeCnt = FeedCooltime;
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionFeedRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Feed.IA_Feed'"));
+	if (nullptr != InputActionFeedRef.Object)
+	{
+		FeedAction = InputActionFeedRef.Object;
+	}
+
+	static ConstructorHelpers::FClassFinder<AActor> FeedBPClassRef(TEXT("/Script/Engine.Blueprint'/Game/Actors/BP_Feed.BP_Feed_C'"));
+	if (FeedBPClassRef.Class)
+	{
+		FeedBPClass = FeedBPClassRef.Class;
+	}
+}
+
+void AAnimalIslandCharacter::Tick(float DeltaTime)
+{
+	if (bIsFeedCool)
+	{
+		FeedCooltimeCnt -= DeltaTime;
+		if (FeedCooltimeCnt <= 0)
+		{
+			bIsFeedCool = false;
+			FeedCooltimeCnt = 0.f;
+		}
+	}
+}
+
+void AAnimalIslandCharacter::Feed()
+{
+	// 조준선 and 카메라 방향으로 회전 후 쏘는 거 또는 그냥 조준선 없이 캐릭터 방향으로 그대로 쏘는 거
+	
+	// 쿨타임
+	if (!bIsFeedCool)
+	{
+		FeedCooltimeCnt = FeedCooltime;
+		bIsFeedCool = true;
+		GetWorld()->SpawnActor<AActor>(FeedBPClass, GetActorLocation(), GetActorRotation());
+	}
+
 }
 
 void AAnimalIslandCharacter::BeginPlay()
@@ -84,6 +128,8 @@ void AAnimalIslandCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAnimalIslandCharacter::Look);
 
+		//Feeding
+		EnhancedInputComponent->BindAction(FeedAction, ETriggerEvent::Triggered, this, &AAnimalIslandCharacter::Feed);
 	}
 
 }
@@ -123,7 +169,4 @@ void AAnimalIslandCharacter::Look(const FInputActionValue& Value)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
-
-
-
 
