@@ -110,6 +110,16 @@ void AAnimalIslandCharacter::BeginPlay()
 	}
 }
 
+void AAnimalIslandCharacter::CheckIsDead()
+{
+	//UE_LOG(LogTemp, Log, TEXT("%d"), Hp);
+	if (Hp <= 0)
+	{
+		UE_LOG(LogTemp, Log, TEXT("GameOver"));
+		Destroy();
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////
 // Input
 

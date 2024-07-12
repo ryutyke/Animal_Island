@@ -85,5 +85,7 @@ public:
 
 	UPROPERTY()
 	uint8 bIsFeedCool : 1;
+
+	void CheckIsDead();
 };
 

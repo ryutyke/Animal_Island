@@ -2,10 +2,10 @@
 
 
 #include "Animal.h"
-#include "Components/SphereComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "AnimalIslandCharacter.h"
 
 // Sets default values
 AAnimal::AAnimal()
@@ -13,18 +13,17 @@ AAnimal::AAnimal()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	// Sphere Collision
-	CollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Collision"));
-	CollisionComponent->InitSphereRadius(30.0f);
-	RootComponent = CollisionComponent;
+	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>("MeshComp");
+	RootComponent = SkeletalMesh;
+	SkeletalMesh->SetCollisionProfileName("NoCollision");
 
+	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>("SphereComp");
+	CollisionComponent->InitCapsuleSize(20.f, 60.f);
 	CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Animal"));
+	CollisionComponent->SetupAttachment(RootComponent);
+
 	CollisionComponent->OnComponentBeginOverlap.AddDynamic(this, &AAnimal::OnBeginOverlap);
 
-
-	// Skeletal Mesh
-	SkeletalMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkeletalMesh"));
-	SkeletalMesh->SetupAttachment(RootComponent);
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> SkeletalMeshRef(TEXT("/Script/Engine.SkeletalMesh'/Game/Characters/Mannequin_UE4/Meshes/SK_Mannequin.SK_Mannequin'"));
 	if (SkeletalMeshRef.Object)
 	{
@@ -38,12 +37,16 @@ AAnimal::AAnimal()
 	CurrentState = EAnimalState::Idle;
 	MoveSpeed = 1000.f;
 
+	CurrentHp = 100;
+	bIsFed = false;
+
 }
 
 // Called when the game starts or when spawned
 void AAnimal::BeginPlay()
 {
 	Super::BeginPlay();
+
 	SetState(EAnimalState::Idle);
 
 
@@ -65,14 +68,32 @@ void AAnimal::BeginPlay()
 void AAnimal::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	HandleState(CurrentState, DeltaTime);
+
+	MoveToTarget(DeltaTime);
 
 }
 
-// Delegate // Need Binding
-void AAnimal::OnFed()
+
+
+bool AAnimal::OnFed()
 {
+	if (GetCurrentState() == EAnimalState::Hit)
+	{
+		return false;
+	}
+
 	SetState(EAnimalState::Hit);
+
+	bIsFed = true;
+	TargetVector.X = -TargetVector.X;
+	TargetVector.Y = -TargetVector.Y;
+	AddActorWorldRotation(FRotator(0.0f, 180.f, 0.f));
+
+	return true;
+	// 표정 바뀌는 거
+	// 뒤 돌아보는 거
+	// 뒤로 가는 거
+	// 
 }
 
 void AAnimal::UpdateIdleState(float InDeltaTime)
@@ -89,6 +110,16 @@ void AAnimal::UpdateHitState()
 void AAnimal::UpdateDeadState()
 {
 	// 
+}
+
+void AAnimal::CheckIsDead()
+{
+	if (CurrentHp <= 0)
+	{
+		SetState(EAnimalState::Dead);
+		UE_LOG(LogTemp, Log, TEXT("Animal Die"));
+		Destroy();
+	}
 }
 
 void AAnimal::SetState(EAnimalState NewState)
@@ -122,16 +153,38 @@ void AAnimal::MoveToTarget(float InDeltaTime)
 
 void AAnimal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if ((OtherActor != this) && (OtherActor != nullptr))
+	if (GetCurrentState() == EAnimalState::Idle)
 	{
-		AAnimal* HitAnimal = Cast<AAnimal>(OtherActor);
-		if (HitAnimal != nullptr)
+		if ((OtherActor != this) && (OtherActor != nullptr))
 		{
-			if ((GetCurrentState() != EAnimalState::Idle) && (HitAnimal->GetCurrentState() == EAnimalState::Idle))
+			AAnimalIslandCharacter* HitCharacter = Cast<AAnimalIslandCharacter>(OtherActor);
+			if (HitCharacter != nullptr)
 			{
-				SetState(EAnimalState::Dead);
-				HitAnimal->SetState(EAnimalState::Dead);
+				int Damage = (this->CurrentHp >= HitCharacter->Hp) ? HitCharacter->Hp : this->CurrentHp;
+				//UE_LOG(LogTemp, Log, TEXT("Damage : %d"), Damage);
+				this->CurrentHp -= Damage;
+				HitCharacter->Hp -= Damage;
+				HitCharacter->CheckIsDead();
+				this->CheckIsDead();
 			}
 		}
 	}
+
+	else if (GetCurrentState() == EAnimalState::Hit)
+	{
+		if ((OtherActor != this) && (OtherActor != nullptr))
+		{
+			AAnimal* HitAnimal = Cast<AAnimal>(OtherActor);
+			if (HitAnimal != nullptr)
+			{
+				//데미지 계산
+				int Damage = (this->CurrentHp >= HitAnimal->CurrentHp) ? HitAnimal->CurrentHp : this->CurrentHp;
+				this->CurrentHp -= Damage;
+				HitAnimal->CurrentHp -= Damage;
+				HitAnimal->CheckIsDead();
+				this->CheckIsDead();
+			}
+		}
+	}
+	
 }

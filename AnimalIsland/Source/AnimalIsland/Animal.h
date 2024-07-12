@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "FeedInterface.h"
 #include "Animal.generated.h"
 
 UENUM(BlueprintType)
@@ -15,7 +16,7 @@ enum class EAnimalState : uint8
 };
 
 UCLASS()
-class ANIMALISLAND_API AAnimal : public AActor
+class ANIMALISLAND_API AAnimal : public AActor, public IFeedInterface
 {
 	GENERATED_BODY()
 
@@ -32,12 +33,13 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	
-	UFUNCTION()
-	void OnFed();
+	virtual bool OnFed() override;
 
 	void UpdateIdleState(float InDeltaTime);
 	void UpdateHitState();
 	void UpdateDeadState();
+
+	void CheckIsDead();
 
 	EAnimalState GetCurrentState() { return CurrentState; }
 
@@ -45,21 +47,20 @@ public:
 	float MoveSpeed;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hp")
-	float MaxHp;
+	int MaxHp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Hp")
-	float CurrentHp;
+	int CurrentHp;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Feed")
-	bool IsFed;
+	uint8 bIsFed : 1;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	class UCapsuleComponent* CollisionComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
+	class USkeletalMeshComponent* SkeletalMesh;
 private:
-	UPROPERTY()
-	TObjectPtr<class USphereComponent> CollisionComponent;
-
-	UPROPERTY()
-	TObjectPtr<class USkeletalMeshComponent> SkeletalMesh;
-
 	UPROPERTY()
 	EAnimalState CurrentState;
 
@@ -67,7 +68,6 @@ private:
 	FVector TargetVector;
 
 	
-
 	void SetState(EAnimalState NewState);
 	void HandleState(EAnimalState InState, float InDeltaTime);
 
