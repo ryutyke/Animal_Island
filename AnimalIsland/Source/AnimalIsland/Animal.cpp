@@ -39,25 +39,25 @@ AAnimal::AAnimal()
 
 	CurrentHp = 100;
 	bIsFed = false;
-
 }
 
 // Called when the game starts or when spawned
 void AAnimal::BeginPlay()
 {
 	Super::BeginPlay();
+	SetLifeSpan(10.f);
 
 	SetState(EAnimalState::Idle);
 
 
 	// Set Target Position Once
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	int RandIntX = FMath::RandRange(-500, 500);
-	int RandIntY = FMath::RandRange(-500, 500);
+	int RandIntX = FMath::RandRange(-300, 300);
+	int RandIntY = FMath::RandRange(-300, 300);
 	FVector PlayerPos = PlayerController->GetPawn()->GetActorLocation();
 	PlayerPos.Z = GetActorLocation().Z;
-	PlayerPos.X += -10;
-	PlayerPos.Y += -10;
+	PlayerPos.X += RandIntX;
+	PlayerPos.Y += RandIntY;
 
 	TargetVector = (PlayerPos - GetActorLocation()).GetSafeNormal();
 

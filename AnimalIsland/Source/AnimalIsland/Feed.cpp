@@ -16,11 +16,11 @@ AFeed::AFeed()
 	RootComponent = SphereComp;
 	//SphereComp->SetCollisionProfileName("Feed");
 	SphereComp->SetWorldScale3D(FVector(1.f, 1.f, 1.f));
-	SphereComp->SetSphereRadius(16.0f);
+	SphereComp->SetSphereRadius(24.0f);
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComp");
 	MeshComp->SetCollisionProfileName("NoCollision");
-	MeshComp->SetWorldScale3D(FVector(0.1f, 0.1f, 0.1f));
+	MeshComp->SetWorldScale3D(FVector(0.15f, 0.15f, 0.15f));
 	//MeshComp->SetWorldRotation(FRotator(0.0f, 90.0f, 0.0f));
 	MeshComp->SetupAttachment(RootComponent);
 
