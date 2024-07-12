@@ -49,6 +49,47 @@ AAnimalIslandCharacter::AAnimalIslandCharacter()
 
 	// Note: The skeletal mesh and anim blueprint references on the Mesh component (inherited from Character) 
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
+
+	Hp = 100;
+	bIsFeedCool = false;
+	FeedCooltimeCnt = 0.0f;
+	FeedCooltime = 3.0f;
+
+	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionFeedRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Feed.IA_Feed'"));
+	if (nullptr != InputActionFeedRef.Object)
+	{
+		FeedAction = InputActionFeedRef.Object;
+	}
+
+	static ConstructorHelpers::FClassFinder<AActor> FeedBPClassRef(TEXT("/Script/Engine.Blueprint'/Game/Actors/BP_Feed.BP_Feed_C'"));
+	if (FeedBPClassRef.Class)
+	{
+		FeedBPClass = FeedBPClassRef.Class;
+	}
+}
+
+void AAnimalIslandCharacter::Tick(float DeltaTime)
+{
+	if (bIsFeedCool)
+	{
+		FeedCooltimeCnt += DeltaTime;
+		if (FeedCooltimeCnt > FeedCooltime)
+		{
+			bIsFeedCool = false;
+			FeedCooltimeCnt = 0.0f;
+		}
+	}
+}
+
+void AAnimalIslandCharacter::Feed()
+{
+	// ÄðÅ¸ÀÓ
+	if (!bIsFeedCool)
+	{
+		bIsFeedCool = true;
+		GetWorld()->SpawnActor<AActor>(FeedBPClass, GetActorLocation(), GetActorRotation());
+	}
+
 }
 
 void AAnimalIslandCharacter::BeginPlay()
@@ -84,6 +125,8 @@ void AAnimalIslandCharacter::SetupPlayerInputComponent(class UInputComponent* Pl
 		//Looking
 		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AAnimalIslandCharacter::Look);
 
+		//Feeding
+		EnhancedInputComponent->BindAction(FeedAction, ETriggerEvent::Triggered, this, &AAnimalIslandCharacter::Feed);
 	}
 
 }
@@ -123,7 +166,4 @@ void AAnimalIslandCharacter::Look(const FInputActionValue& Value)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
-
-
-
 

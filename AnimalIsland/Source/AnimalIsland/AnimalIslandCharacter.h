@@ -37,9 +37,17 @@ class AAnimalIslandCharacter : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	/** Feed Input Action */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* FeedAction;
+
 public:
 	AAnimalIslandCharacter();
 	
+	virtual void Tick(float DeltaTime) override;
+
+	UFUNCTION()
+	void Feed();
 
 protected:
 
@@ -62,5 +70,20 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	UPROPERTY(EditDefaultsOnly, Category = Status)
+	int Hp;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> FeedBPClass;
+
+	UPROPERTY(EditDefaultsOnly, Category = Cooltime)
+	float FeedCooltime;
+
+	UPROPERTY()
+	float FeedCooltimeCnt;
+
+	UPROPERTY()
+	uint8 bIsFeedCool : 1;
 };
 
