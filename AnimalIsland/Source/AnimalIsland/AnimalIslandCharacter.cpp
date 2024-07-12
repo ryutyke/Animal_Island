@@ -90,6 +90,10 @@ void AAnimalIslandCharacter::Feed()
 	{
 		FeedCooltimeCnt = FeedCooltime;
 		bIsFeedCool = true;
+		FRotator temp = GetControlRotation();
+		temp.Pitch = 0.0f;
+		temp.Roll = 0.0f;
+		SetActorRotation(temp);
 		GetWorld()->SpawnActor<AActor>(FeedBPClass, GetActorLocation(), GetActorRotation());
 	}
 
@@ -116,7 +120,9 @@ void AAnimalIslandCharacter::CheckIsDead()
 	if (Hp <= 0)
 	{
 		UE_LOG(LogTemp, Log, TEXT("GameOver"));
-		Destroy();
+		Cast<APlayerController>(GetController())->SetPause(true);
+		//Destroy();
+
 	}
 }
 

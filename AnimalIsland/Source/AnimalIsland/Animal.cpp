@@ -18,7 +18,8 @@ AAnimal::AAnimal()
 	SkeletalMesh->SetCollisionProfileName("NoCollision");
 
 	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>("SphereComp");
-	CollisionComponent->InitCapsuleSize(20.f, 60.f);
+	CollisionComponent->SetRelativeLocation(FVector(0.f, 0.f, 90.f));
+	CollisionComponent->InitCapsuleSize(20.f, 90.f);
 	CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Animal"));
 	CollisionComponent->SetupAttachment(RootComponent);
 
@@ -37,27 +38,29 @@ AAnimal::AAnimal()
 	CurrentState = EAnimalState::Idle;
 	MoveSpeed = 1000.f;
 
-	CurrentHp = 100;
+	MaxHp = 100;
+	
 	bIsFed = false;
-
 }
 
 // Called when the game starts or when spawned
 void AAnimal::BeginPlay()
 {
 	Super::BeginPlay();
+	CurrentHp = MaxHp;
+	SetLifeSpan(10.f);
 
 	SetState(EAnimalState::Idle);
 
 
 	// Set Target Position Once
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	int RandIntX = FMath::RandRange(-500, 500);
-	int RandIntY = FMath::RandRange(-500, 500);
+	int RandIntX = FMath::RandRange(-300, 300);
+	int RandIntY = FMath::RandRange(-300, 300);
 	FVector PlayerPos = PlayerController->GetPawn()->GetActorLocation();
 	PlayerPos.Z = GetActorLocation().Z;
-	PlayerPos.X += -10;
-	PlayerPos.Y += -10;
+	PlayerPos.X += RandIntX;
+	PlayerPos.Y += RandIntY;
 
 	TargetVector = (PlayerPos - GetActorLocation()).GetSafeNormal();
 

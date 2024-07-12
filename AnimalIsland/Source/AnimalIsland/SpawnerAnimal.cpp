@@ -3,7 +3,6 @@
 
 #include "SpawnerAnimal.h"
 #include "Kismet/GameplayStatics.h"
-#include "Animal.h"
 
 // Sets default values
 ASpawnerAnimal::ASpawnerAnimal()
@@ -19,7 +18,13 @@ ASpawnerAnimal::ASpawnerAnimal()
 	DecrementStep = 0.05f;
 	MinimumDuration = 2.0f;
 
-	SpawnSubject = AAnimal::StaticClass();
+	static ConstructorHelpers::FClassFinder<AActor> AnimalBPClassRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/BP_Animal.BP_Animal_C'"));
+	if (AnimalBPClassRef.Class)
+	{
+		ToSpawnAnimalClass = AnimalBPClassRef.Class;
+	}
+	SpawnNum = 4;
+	SpawnCnt = 0;
 }
 
 // Called when the game starts or when spawned
@@ -59,34 +64,44 @@ void ASpawnerAnimal::Tick(float DeltaTime)
 
 void ASpawnerAnimal::Spawn()
 {
-	if (SpawnSubject)
+	if (ToSpawnAnimalClass)
 	{
-		SpawnActorAtLocation(CalculateRandomInCirclePosition(), GetActorRotation());
+		for (int i = 0; i < SpawnNum; i++)
+		{
+			SpawnActorAtLocation(CalculateRandomInCirclePosition(), GetActorRotation());
+		}
+		SpawnCnt++;
+		if (SpawnCnt % 5 == 0)
+		{
+			SpawnNum++;
+		}
 	}
 }
 
 FVector ASpawnerAnimal::CalculateRandomInCirclePosition() const
 {
     float RandomAngle = FMath::RandRange(0.0f, 360.0f);
-    float RandomRadius = FMath::RandRange(0.0f, SpawnRange);
+    //float RandomRadius = FMath::RandRange(0.0f, SpawnRange);
+    float RandomRadius = SpawnRange;
     
     float Radian = FMath::DegreesToRadians(RandomAngle);
     
     float RandX = PlayerPosition.X + RandomRadius * FMath::Cos(Radian);
     float RandY = PlayerPosition.Y + RandomRadius * FMath::Sin(Radian);
-    float RandZ = PlayerPosition.Z;
+    float RandZ = 0.f;
+    //float RandZ = PlayerPosition.Z;
     
 	return FVector(RandX, RandY, RandZ);
 }
 
 void ASpawnerAnimal::SpawnActorAtLocation(const FVector& InLocation, const FRotator& InRotation)
 {
-    if (SpawnSubject)
+    if (ToSpawnAnimalClass)
     {
         UWorld* World = GetWorld();
         if (World)
         {
-            AAnimal* SpawnedActor = World->SpawnActor<AAnimal>(SpawnSubject, InLocation, InRotation);
+            AActor* SpawnedActor = World->SpawnActor<AActor>(ToSpawnAnimalClass, InLocation, InRotation);
             if (SpawnedActor)
             {
                 // Success

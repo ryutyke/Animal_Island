@@ -3,3 +3,6 @@
 
 #include "UI/CharacterHUD.h"
 
+UCharacterHUD::UCharacterHUD(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
+{
+}
