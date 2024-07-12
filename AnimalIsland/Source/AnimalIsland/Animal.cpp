@@ -18,7 +18,8 @@ AAnimal::AAnimal()
 	SkeletalMesh->SetCollisionProfileName("NoCollision");
 
 	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>("SphereComp");
-	CollisionComponent->InitCapsuleSize(20.f, 60.f);
+	CollisionComponent->SetRelativeLocation(FVector(0.f, 0.f, 90.f));
+	CollisionComponent->InitCapsuleSize(20.f, 90.f);
 	CollisionComponent->BodyInstance.SetCollisionProfileName(TEXT("Animal"));
 	CollisionComponent->SetupAttachment(RootComponent);
 
@@ -37,7 +38,8 @@ AAnimal::AAnimal()
 	CurrentState = EAnimalState::Idle;
 	MoveSpeed = 1000.f;
 
-	CurrentHp = 100;
+	MaxHp = 100;
+	
 	bIsFed = false;
 }
 
@@ -45,6 +47,7 @@ AAnimal::AAnimal()
 void AAnimal::BeginPlay()
 {
 	Super::BeginPlay();
+	CurrentHp = MaxHp;
 	SetLifeSpan(10.f);
 
 	SetState(EAnimalState::Idle);
