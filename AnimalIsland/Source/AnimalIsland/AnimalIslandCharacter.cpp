@@ -66,6 +66,12 @@ AAnimalIslandCharacter::AAnimalIslandCharacter()
 	{
 		FeedBPClass = FeedBPClassRef.Class;
 	}
+
+	static ConstructorHelpers::FObjectFinder<UAnimMontage> ThrowMontageRef(TEXT("/Script/Engine.AnimMontage'/Game/Assets/Player/AM_Throw_Cut.AM_Throw_Cut'"));
+	if (ThrowMontageRef.Succeeded())
+	{
+		ThrowMontage = ThrowMontageRef.Object;
+	}
 }
 
 void AAnimalIslandCharacter::Tick(float DeltaTime)
@@ -88,6 +94,7 @@ void AAnimalIslandCharacter::Feed()
 	// ÄðÅ¸ÀÓ
 	if (!bIsFeedCool)
 	{
+		GetMesh()->GetAnimInstance()->Montage_Play(ThrowMontage);
 		FeedCooltimeCnt = FeedCooltime;
 		bIsFeedCool = true;
 		FRotator temp = GetControlRotation();
