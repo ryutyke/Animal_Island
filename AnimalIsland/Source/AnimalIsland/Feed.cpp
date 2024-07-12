@@ -24,7 +24,7 @@ AFeed::AFeed()
 	//MeshComp->SetWorldRotation(FRotator(0.0f, 90.0f, 0.0f));
 	MeshComp->SetupAttachment(RootComponent);
 
-	SphereComp->OnComponentHit.AddDynamic(this, &AFeed::OnHit);
+	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &AFeed::OnBeginOverlap);
 }
 
 // Called when the game starts or when spawned
@@ -47,13 +47,27 @@ void AFeed::Tick(float DeltaTime)
 
 void AFeed::OnEaten()
 {
-
+	Destroy();
 }
 
-void AFeed::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
+void AFeed::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	UE_LOG(LogTemp, Log, TEXT("DDDDDDDDDDDDD"));
+	if ((OtherActor != this) && (OtherActor != nullptr))
+	{
+		/*AFeed* FeedCheck = Cast<AFeed>(OtherActor);
+		if (FeedCheck != nullptr)
+		{
+			return;
+		}*/
 
-	// if 동물이라면 ~~~ 또는 콜리전채널 써서 동물이랑만 충돌하게
-	// OnEaten()
-	// OtherActor 동물Base로 Cast해서 .OnFed()
+		IFeedInterface* FeedInterface = Cast<IFeedInterface>(OtherActor);
+		if (FeedInterface != nullptr)
+		{
+			if (FeedInterface->OnFed())
+			{
+				this->OnEaten();
+			}
+		}
+	}
 }

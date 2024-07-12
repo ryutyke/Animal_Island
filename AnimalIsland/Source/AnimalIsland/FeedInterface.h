@@ -27,8 +27,10 @@ public:
 		UE_LOG(LogTemp, Log, TEXT("Feed Is Eaten"));
 	}
 
-	virtual void OnFed()
+	virtual bool OnFed()
 	{
 		UE_LOG(LogTemp, Log, TEXT("Animal Eat Feed"));
+
+		return true;
 	}
 };
