@@ -10,6 +10,6 @@ public class AnimalIsland : ModuleRules
 
         PublicIncludePaths.AddRange(new string[] { "AnimalIsland" });
 
-        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG", "EnhancedInput" });
+        PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "UMG", "EnhancedInput", "Niagara" });
 	}
 }
