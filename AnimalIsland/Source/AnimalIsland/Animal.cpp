@@ -239,7 +239,7 @@ void AAnimal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* O
 				int Damage = (this->CurrentHp >= HitCharacter->Hp) ? HitCharacter->Hp : this->CurrentHp;
 				//UE_LOG(LogTemp, Log, TEXT("Damage : %d"), Damage);
 				this->CurrentHp -= Damage;
-				HitCharacter->Hp -= Damage;
+				HitCharacter->Damaged(Damage);
 				HitCharacter->CheckIsDead();
 				this->CheckIsDead();
 			}

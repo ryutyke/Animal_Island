@@ -56,6 +56,9 @@ public:
 	UFUNCTION()
 	void Feed();
 
+	UFUNCTION()
+	void Damaged(int InDamage);
+
 protected:
 
 	/** Called for movement input */

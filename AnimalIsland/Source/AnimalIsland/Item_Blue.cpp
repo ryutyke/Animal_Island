@@ -25,6 +25,7 @@ void AItem_Blue::ApplyEffect()
 		if (HitCharacter != nullptr)
 		{
 			Super::ApplyEffect();
+			HitCharacter->SpeedItemTimeCnt = HitCharacter->SpeedItemTime;
 			HitCharacter->bSpeedUp = true;
 		}
 	}
