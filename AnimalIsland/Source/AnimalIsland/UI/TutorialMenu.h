@@ -16,4 +16,11 @@ class ANIMALISLAND_API UTutorialMenu : public UUserWidget
 	
 public:
 	UTutorialMenu(const FObjectInitializer& ObjectInitializer);
+	virtual void NativeConstruct() override;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> StartBtn;
+	
+	UFUNCTION()
+	void ClickedGameStart();
 };

@@ -16,5 +16,17 @@ class ANIMALISLAND_API UStartMenu : public UUserWidget
 
 public:
 	UStartMenu(const FObjectInitializer& ObjectInitializer);
+	virtual void NativeConstruct() override;
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> StartBtn;
 	
+	UFUNCTION()
+	void ClickedGameStart();
+
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> SettingBtn;
+	
+	UFUNCTION()
+	void ClickedSettings();
 };

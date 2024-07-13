@@ -16,5 +16,18 @@ class ANIMALISLAND_API UGameOverMenu : public UUserWidget
 
 public:
 	UGameOverMenu(const FObjectInitializer& ObjectInitializer);
+
+	virtual void NativeConstruct() override;
+    
+    UPROPERTY(meta = (BindWidget))
+    TObjectPtr<class UButton> BackBtn;
 	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UTextBlock> MinuteTxt;
+	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UTextBlock> SecondTxt;
+    
+    UFUNCTION()
+    void ClickedBackBtn();
 };
