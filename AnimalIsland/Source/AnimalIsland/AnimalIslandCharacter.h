@@ -121,5 +121,8 @@ public:
 
 	UFUNCTION()
 	void GetHealItem();
+
+	UPROPERTY(BlueprintReadWrite)
+	float MouseSensitivity;
 };
 

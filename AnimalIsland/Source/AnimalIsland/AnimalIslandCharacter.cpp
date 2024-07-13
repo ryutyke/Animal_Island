@@ -90,6 +90,8 @@ AAnimalIslandCharacter::AAnimalIslandCharacter()
 	{
 		DyingSound = DyingSoundObject.Object;
 	}
+
+	MouseSensitivity = 1.f;
 }
 
 void AAnimalIslandCharacter::Tick(float DeltaTime)
@@ -255,8 +257,8 @@ void AAnimalIslandCharacter::Look(const FInputActionValue& Value)
 	if (Controller != nullptr)
 	{
 		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
+		AddControllerYawInput(LookAxisVector.X * MouseSensitivity);
+		AddControllerPitchInput(LookAxisVector.Y * MouseSensitivity);
 	}
 }
 
