@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Components/AudioComponent.h"
 #include "AnimalIslandGameMode.generated.h"
 
 UCLASS(minimalapi)
@@ -40,6 +41,12 @@ public:
 	void SettingToTitleUI();
 	void GameoverToTitleUI();
 	void GameoverToMainUI();
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+	TObjectPtr<class USoundCue> BgmSound;
+
+	UPROPERTY(BlueprintReadWrite)
+	UAudioComponent* AudioComponent;
 };
 
 

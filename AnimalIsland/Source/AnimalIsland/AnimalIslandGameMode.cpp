@@ -8,6 +8,8 @@
 #include "UI/MainMenu.h"
 #include "UI/SettingMenu.h"
 #include "UI/GameOverMenu.h"
+#include "Sound/SoundCue.h"
+#include "GJGameInstance.h"
 
 AAnimalIslandGameMode::AAnimalIslandGameMode()
 {
@@ -49,12 +51,28 @@ AAnimalIslandGameMode::AAnimalIslandGameMode()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to load GameOverWidgetClass"));
 	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> BgmSoundObject(TEXT("/Script/Engine.SoundCue'/Game/Assets/SFX/Bgm_Cue.Bgm_Cue'"));
+	if (nullptr != BgmSoundObject.Object)
+	{
+		BgmSound = BgmSoundObject.Object;
+	}
+
+	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
+	AudioComponent->bAutoActivate = false;
+	AudioComponent->SetupAttachment(RootComponent);
 }
 
 void AAnimalIslandGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	if (BgmSound)
+	{
+		AudioComponent->SetSound(BgmSound);
+		AudioComponent->Play();
+	}
+	
 	// UI Mode
 	APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	if(PlayerController)
