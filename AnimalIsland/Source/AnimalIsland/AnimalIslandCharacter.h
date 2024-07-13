@@ -90,6 +90,29 @@ public:
 	UPROPERTY()
 	uint8 bIsFeedCool : 1;
 
+	UPROPERTY()
+	uint8 bSpeedUp : 1;
+
+	
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = Cooltime)
+	float SpeedItemTime;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = Cooltime)
+	float SpeedItemTimeCnt;
+
+	UPROPERTY()
+	uint8 bCoolTimeBuf : 1;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = Cooltime)
+	float CoolItemTime;
+
+	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = Cooltime)
+	float CoolItemTimeCnt;
+
 	void CheckIsDead();
+
+	UFUNCTION()
+	void GetHealItem();
 };
 

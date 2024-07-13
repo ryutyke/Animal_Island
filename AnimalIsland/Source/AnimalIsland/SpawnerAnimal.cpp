@@ -25,6 +25,8 @@ ASpawnerAnimal::ASpawnerAnimal()
 	}
 	SpawnNum = 4;
 	SpawnCnt = 0;
+
+	// TSubclass로 동물 5마리 가져오기
 }
 
 // Called when the game starts or when spawned
@@ -81,8 +83,8 @@ void ASpawnerAnimal::Spawn()
 FVector ASpawnerAnimal::CalculateRandomInCirclePosition() const
 {
     float RandomAngle = FMath::RandRange(0.0f, 360.0f);
-    //float RandomRadius = FMath::RandRange(0.0f, SpawnRange);
-    float RandomRadius = SpawnRange;
+    float RandomRadius = FMath::RandRange(0.0f, 200.f);
+    RandomRadius += SpawnRange;
     
     float Radian = FMath::DegreesToRadians(RandomAngle);
     
@@ -98,6 +100,7 @@ void ASpawnerAnimal::SpawnActorAtLocation(const FVector& InLocation, const FRota
 {
     if (ToSpawnAnimalClass)
     {
+		// 확률 로직 짜서 5마리 중 스폰
         UWorld* World = GetWorld();
         if (World)
         {
@@ -106,16 +109,16 @@ void ASpawnerAnimal::SpawnActorAtLocation(const FVector& InLocation, const FRota
             {
                 // Success
 				float Distance = FVector::Dist(GetActorLocation(), InLocation);
-				UE_LOG(LogTemp, Warning, TEXT("Success to spawn actor. Distance: %f"), Distance);
+				//UE_LOG(LogTemp, Warning, TEXT("Success to spawn actor. Distance: %f"), Distance);
             }
             else
             {
-                UE_LOG(LogTemp, Error, TEXT("Failed to spawn actor."));
+                //UE_LOG(LogTemp, Error, TEXT("Failed to spawn actor."));
             }
         }
     }
     else
     {
-        UE_LOG(LogTemp, Error, TEXT("ActorToSpawn is not set."));
+        //UE_LOG(LogTemp, Error, TEXT("ActorToSpawn is not set."));
     }
 }

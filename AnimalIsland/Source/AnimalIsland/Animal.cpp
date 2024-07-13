@@ -41,11 +41,19 @@ AAnimal::AAnimal()
 	MaxHp = 100;
 	
 	bIsFed = false;
+
+	bDropItem = false;
 }
 
 // Called when the game starts or when spawned
 void AAnimal::BeginPlay()
 {
+	int temp = FMath::RandRange(0, 9);
+	if (temp == 0)
+	{
+		bDropItem = true;
+	}
+
 	Super::BeginPlay();
 	CurrentHp = MaxHp;
 	SetLifeSpan(10.f);
@@ -88,15 +96,20 @@ bool AAnimal::OnFed()
 	SetState(EAnimalState::Hit);
 
 	bIsFed = true;
-	TargetVector.X = -TargetVector.X;
-	TargetVector.Y = -TargetVector.Y;
-	AddActorWorldRotation(FRotator(0.0f, 180.f, 0.f));
 
+	if (bDropItem)
+	{
+		//DropItem();
+		return Destroy();
+	}
+
+	else
+	{
+		TargetVector.X = -TargetVector.X;
+		TargetVector.Y = -TargetVector.Y;
+		AddActorWorldRotation(FRotator(0.0f, 180.f, 0.f));
+	}
 	return true;
-	// 표정 바뀌는 거
-	// 뒤 돌아보는 거
-	// 뒤로 가는 거
-	// 
 }
 
 void AAnimal::UpdateIdleState(float InDeltaTime)
@@ -123,6 +136,11 @@ void AAnimal::CheckIsDead()
 		UE_LOG(LogTemp, Log, TEXT("Animal Die"));
 		Destroy();
 	}
+}
+
+void AAnimal::DropItem()
+{
+
 }
 
 void AAnimal::SetState(EAnimalState NewState)

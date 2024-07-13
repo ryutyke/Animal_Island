@@ -39,7 +39,11 @@ public:
 	void UpdateHitState();
 	void UpdateDeadState();
 
+	UFUNCTION()
 	void CheckIsDead();
+
+	UFUNCTION()
+	void DropItem();
 
 	EAnimalState GetCurrentState() { return CurrentState; }
 
@@ -54,6 +58,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Feed")
 	uint8 bIsFed : 1;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	uint8 bDropItem : 1;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	class UCapsuleComponent* CollisionComponent;
