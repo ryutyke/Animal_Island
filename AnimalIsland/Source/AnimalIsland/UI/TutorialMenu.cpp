@@ -5,6 +5,7 @@
 
 #include "AnimalIslandGameMode.h"
 #include "Components/Button.h"
+#include "Kismet/GameplayStatics.h"
 
 UTutorialMenu::UTutorialMenu(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -21,6 +22,6 @@ void UTutorialMenu::ClickedGameStart()
 	AAnimalIslandGameMode* GameMode = Cast<AAnimalIslandGameMode>(GetWorld()->GetAuthGameMode());
 	if(GameMode)
 	{
-		GameMode->StartMainUI();
+		UGameplayStatics::OpenLevel(this, FName("ThirdPersonMap"));
 	}
 }

@@ -19,10 +19,11 @@ void UStartMenu::NativeConstruct()
 
 void UStartMenu::ClickedGameStart()
 {
+	// need modifying
 	AAnimalIslandGameMode* GameMode = Cast<AAnimalIslandGameMode>(GetWorld()->GetAuthGameMode());
 	if(GameMode)
 	{
-		GameMode->ViewTutorialUI();
+		//GameMode->ViewTutorialUI();
 	}
 }
 
