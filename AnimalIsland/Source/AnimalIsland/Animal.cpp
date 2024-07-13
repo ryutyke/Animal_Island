@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "AnimalIslandCharacter.h"
+#include "GJGameInstance.h"
 
 // Sets default values
 AAnimal::AAnimal()
@@ -66,6 +67,12 @@ AAnimal::AAnimal()
 	{
 		FeedSound = FeedSoundObject.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> ItemSpawnSoundObject(TEXT("/Script/Engine.SoundCue'/Game/Assets/SFX/Item_Shown_Cue.Item_Shown_Cue'"));
+	if (nullptr != ItemSpawnSoundObject.Object)
+	{
+		ItemSpawnSound = ItemSpawnSoundObject.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -116,7 +123,7 @@ bool AAnimal::OnFed()
 		return false;
 	}
 
-	UGameplayStatics::PlaySound2D(this, FeedSound);
+	UGameplayStatics::PlaySound2D(this, FeedSound, CastChecked<UGJGameInstance>(GetWorld()->GetGameInstance())->SFXVolume);
 
 	SetState(EAnimalState::Hit);
 
@@ -160,7 +167,7 @@ void AAnimal::CheckIsDead()
 		SetState(EAnimalState::Dead);
 		if (DeadSound != nullptr)
 		{
-			UGameplayStatics::PlaySound2D(this, DeadSound);
+			UGameplayStatics::PlaySound2D(this, DeadSound, CastChecked<UGJGameInstance>(GetWorld()->GetGameInstance())->SFXVolume);
 		}
 		UE_LOG(LogTemp, Log, TEXT("Animal Die"));
 		Destroy();
@@ -172,6 +179,10 @@ void AAnimal::DropItem()
 	int RandVar = FMath::RandRange(1, 3);
 	FVector SpawnLocation = GetActorLocation();
 	SpawnLocation.Z = 30.0f;
+
+	// ¼Ò¸®
+	UGameplayStatics::PlaySound2D(this, ItemSpawnSound, CastChecked<UGJGameInstance>(GetWorld()->GetGameInstance())->SFXVolume);
+
 	if (RandVar == 1)
 	{
 		GetWorld()->SpawnActor<AActor>(RedItemBPClass, SpawnLocation, GetActorRotation());

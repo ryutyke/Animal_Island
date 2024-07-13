@@ -11,6 +11,9 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
+#include "GJGameInstance.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -57,7 +60,7 @@ AAnimalIslandCharacter::AAnimalIslandCharacter()
 	bSpeedUp = false;
 	bCoolTimeBuf = false;
 	FeedCooltime = 3.0f;
-	FeedCooltimeCnt = FeedCooltime;
+	FeedCooltimeCnt = 0.0f;
 	SpeedItemTime = 5.0f;
 	SpeedItemTimeCnt = SpeedItemTime;
 	CoolItemTime = 3.0f;
@@ -79,6 +82,12 @@ AAnimalIslandCharacter::AAnimalIslandCharacter()
 	if (ThrowMontageRef.Succeeded())
 	{
 		ThrowMontage = ThrowMontageRef.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> DyingSoundObject(TEXT("/Script/Engine.SoundCue'/Game/Assets/SFX/Character_Dying_Cue.Character_Dying_Cue'"));
+	if (nullptr != DyingSoundObject.Object)
+	{
+		DyingSound = DyingSoundObject.Object;
 	}
 }
 
@@ -161,6 +170,7 @@ void AAnimalIslandCharacter::CheckIsDead()
 	if (Hp <= 0)
 	{
 		UE_LOG(LogTemp, Log, TEXT("GameOver"));
+		UGameplayStatics::PlaySound2D(this, DyingSound, CastChecked<UGJGameInstance>(GetWorld()->GetGameInstance())->SFXVolume);
 		AAnimalIslandGameMode* GameMode = Cast<AAnimalIslandGameMode>(GetWorld()->GetAuthGameMode());
 		if(GameMode)
 		{
