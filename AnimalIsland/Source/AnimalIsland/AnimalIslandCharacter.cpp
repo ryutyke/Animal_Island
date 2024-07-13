@@ -57,7 +57,7 @@ AAnimalIslandCharacter::AAnimalIslandCharacter()
 	bSpeedUp = false;
 	bCoolTimeBuf = false;
 	FeedCooltime = 3.0f;
-	FeedCooltimeCnt = FeedCooltime;
+	FeedCooltimeCnt = 0.0f;
 	SpeedItemTime = 5.0f;
 	SpeedItemTimeCnt = SpeedItemTime;
 	CoolItemTime = 3.0f;
