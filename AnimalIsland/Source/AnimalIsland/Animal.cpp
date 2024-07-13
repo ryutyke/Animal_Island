@@ -66,6 +66,12 @@ AAnimal::AAnimal()
 	{
 		FeedSound = FeedSoundObject.Object;
 	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> ItemSpawnSoundObject(TEXT("/Script/Engine.SoundCue'/Game/Assets/SFX/Item_Shown_Cue.Item_Shown_Cue'"));
+	if (nullptr != ItemSpawnSoundObject.Object)
+	{
+		ItemSpawnSound = ItemSpawnSoundObject.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -172,6 +178,10 @@ void AAnimal::DropItem()
 	int RandVar = FMath::RandRange(1, 3);
 	FVector SpawnLocation = GetActorLocation();
 	SpawnLocation.Z = 30.0f;
+
+	// ¼Ò¸®
+	UGameplayStatics::PlaySound2D(this, ItemSpawnSound);
+
 	if (RandVar == 1)
 	{
 		GetWorld()->SpawnActor<AActor>(RedItemBPClass, SpawnLocation, GetActorRotation());

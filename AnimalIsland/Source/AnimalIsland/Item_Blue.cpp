@@ -4,9 +4,15 @@
 #include "Item_Blue.h"
 #include "AnimalIslandCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 AItem_Blue::AItem_Blue()
 {
+	static ConstructorHelpers::FObjectFinder<USoundCue> EatenSoundObject(TEXT("/Script/Engine.SoundCue'/Game/Assets/SFX/Ate_BlueItem_Cue.Ate_BlueItem_Cue'"));
+	if (nullptr != EatenSoundObject.Object)
+	{
+		EatenSound = EatenSoundObject.Object;
+	}
 }
 
 void AItem_Blue::ApplyEffect()
@@ -18,6 +24,7 @@ void AItem_Blue::ApplyEffect()
 
 		if (HitCharacter != nullptr)
 		{
+			Super::ApplyEffect();
 			HitCharacter->bSpeedUp = true;
 		}
 	}

@@ -4,9 +4,15 @@
 #include "Item_Green.h"
 #include "AnimalIslandCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 AItem_Green::AItem_Green()
 {
+	static ConstructorHelpers::FObjectFinder<USoundCue> EatenSoundObject(TEXT("/Script/Engine.SoundCue'/Game/Assets/SFX/Ate_GreenItem_Cue.Ate_GreenItem_Cue'"));
+	if (nullptr != EatenSoundObject.Object)
+	{
+		EatenSound = EatenSoundObject.Object;
+	}
 }
 
 void AItem_Green::ApplyEffect()
@@ -18,6 +24,7 @@ void AItem_Green::ApplyEffect()
 
 		if (HitCharacter != nullptr)
 		{
+			Super::ApplyEffect();
 			HitCharacter->bCoolTimeBuf = true;
 		}
 	}
