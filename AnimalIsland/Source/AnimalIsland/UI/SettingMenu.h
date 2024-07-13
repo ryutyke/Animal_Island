@@ -38,6 +38,7 @@ private:
 	TObjectPtr<UImage> Mouse_First_Arrow;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> MouseFirstBtn;
+	
 	UFUNCTION()
 	void ClickedMouseFirstArrow();
 	
@@ -45,6 +46,7 @@ private:
 	TObjectPtr<UImage> Mouse_Second_Arrow;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> MouseSecondBtn;
+	
 	UFUNCTION()
 	void ClickedMouseSecondArrow();
 	
@@ -52,6 +54,7 @@ private:
 	TObjectPtr<UImage> Mouse_Third_Arrow;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> MouseThirdBtn;
+	
 	UFUNCTION()
 	void ClickedMouseThirdArrow();
 	
@@ -59,17 +62,20 @@ private:
 	TObjectPtr<UImage> Mouse_Fourth_Arrow;
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> MouseFourthBtn;
+	
 	UFUNCTION()
 	void ClickedMouseFourthArrow();
 
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> BackBtn;
+	
 	UFUNCTION()
 	void ClickedBackBtn();
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UButton> ExitBtn;
+	
 	UFUNCTION()
 	void ClickedExitBtn();
 
