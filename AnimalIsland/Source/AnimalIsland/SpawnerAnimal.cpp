@@ -12,21 +12,51 @@ ASpawnerAnimal::ASpawnerAnimal()
 
 	SpawnRange = 2000.0f;
 
-	SpawnDuration = 5.0f;
+	SpawnDuration = 3.5f;
 	SpawnDurationCnt = SpawnDuration;
 
-	DecrementStep = 0.05f;
-	MinimumDuration = 2.0f;
+	DecrementStep = 0.1f;
+	MinimumDuration = 1.5f;
 
-	static ConstructorHelpers::FClassFinder<AActor> AnimalBPClassRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/BP_Animal.BP_Animal_C'"));
+	/*static ConstructorHelpers::FClassFinder<AActor> AnimalBPClassRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/BP_Animal.BP_Animal_C'"));
 	if (AnimalBPClassRef.Class)
 	{
 		ToSpawnAnimalClass = AnimalBPClassRef.Class;
+	}*/
+
+	static ConstructorHelpers::FClassFinder<AActor> HedgehogClassRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/BP_Hedgehog.BP_Hedgehog_C'"));
+	if (HedgehogClassRef.Class)
+	{
+		HedgehogClass = HedgehogClassRef.Class;
 	}
-	SpawnNum = 4;
+
+	static ConstructorHelpers::FClassFinder<AActor> GoatClassRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/BP_Goat.BP_Goat_C'"));
+	if (GoatClassRef.Class)
+	{
+		GoatClass = GoatClassRef.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<AActor> KangarooClassRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/BP_Kangaroo.BP_Kangaroo_C'"));
+	if (KangarooClassRef.Class)
+	{
+		KangarooClass = KangarooClassRef.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<AActor> WolfClassRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/BP_Wolf.BP_Wolf_C'"));
+	if (WolfClassRef.Class)
+	{
+		WolfClass = WolfClassRef.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<AActor> TigerClassRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/BP_Tiger.BP_Tiger_C'"));
+	if (TigerClassRef.Class)
+	{
+		TigerClass = TigerClassRef.Class;
+	}
+
+	SpawnNum = 10;
 	SpawnCnt = 0;
 
-	// TSubclass로 동물 5마리 가져오기
 }
 
 // Called when the game starts or when spawned
@@ -66,17 +96,14 @@ void ASpawnerAnimal::Tick(float DeltaTime)
 
 void ASpawnerAnimal::Spawn()
 {
-	if (ToSpawnAnimalClass)
+	for (int i = 0; i < SpawnNum; i++)
 	{
-		for (int i = 0; i < SpawnNum; i++)
-		{
-			SpawnActorAtLocation(CalculateRandomInCirclePosition(), GetActorRotation());
-		}
-		SpawnCnt++;
-		if (SpawnCnt % 5 == 0)
-		{
-			SpawnNum++;
-		}
+		SpawnActorAtLocation(CalculateRandomInCirclePosition(), GetActorRotation());
+	}
+	SpawnCnt++;
+	if (SpawnCnt % 5 == 0)
+	{
+		SpawnNum++;
 	}
 }
 
@@ -98,13 +125,36 @@ FVector ASpawnerAnimal::CalculateRandomInCirclePosition() const
 
 void ASpawnerAnimal::SpawnActorAtLocation(const FVector& InLocation, const FRotator& InRotation)
 {
-    if (ToSpawnAnimalClass)
+	TSubclassOf<AActor> ToSpawnClass;
+	int RandValue = FMath::RandRange(1, 100);
+	if (RandValue <= 40)
+	{
+		ToSpawnClass = HedgehogClass;
+	}
+	else if (RandValue <= 70)
+	{
+		ToSpawnClass = GoatClass;
+	}
+	else if (RandValue <= 85)
+	{
+		ToSpawnClass = KangarooClass;
+	}
+	else if (RandValue <= 95)
+	{
+		ToSpawnClass = WolfClass;
+	}
+	else
+	{
+		ToSpawnClass = TigerClass;
+	}
+
+    if (ToSpawnClass)
     {
-		// 확률 로직 짜서 5마리 중 스폰
         UWorld* World = GetWorld();
+
         if (World)
         {
-            AActor* SpawnedActor = World->SpawnActor<AActor>(ToSpawnAnimalClass, InLocation, InRotation);
+            AActor* SpawnedActor = World->SpawnActor<AActor>(ToSpawnClass, InLocation, InRotation);
             if (SpawnedActor)
             {
                 // Success

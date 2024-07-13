@@ -35,14 +35,29 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Duration")
 	float MinimumDuration;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
-	TSubclassOf<AActor> ToSpawnAnimalClass;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	TSubclassOf<AActor> ToSpawnAnimalClass;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
 	int SpawnNum;
 
 	UPROPERTY()
 	int SpawnCnt;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	TSubclassOf<AActor> HedgehogClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	TSubclassOf<AActor> GoatClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	TSubclassOf<AActor> KangarooClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	TSubclassOf<AActor> WolfClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Spawn")
+	TSubclassOf<AActor> TigerClass;
 
 private:
 	UPROPERTY()
