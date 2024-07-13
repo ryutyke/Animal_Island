@@ -27,6 +27,4 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> SettingBtn;
 	
-	UFUNCTION()
-	void ClickedSettings();
 };

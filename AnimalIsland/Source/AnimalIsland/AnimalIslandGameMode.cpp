@@ -2,10 +2,9 @@
 
 #include "AnimalIslandGameMode.h"
 #include "AnimalIslandCharacter.h"
-#include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
-#include "UI/StartMenu.h"
-#include "UI/TutorialMenu.h"
+#include "UI/CharacterHUD.h"
+#include "UObject/ConstructorHelpers.h"
 #include "UI/MainMenu.h"
 #include "UI/SettingMenu.h"
 #include "UI/GameOverMenu.h"
@@ -20,25 +19,6 @@ AAnimalIslandGameMode::AAnimalIslandGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 
-	static ConstructorHelpers::FClassFinder<UStartMenu> TitleWidgetClassRef(TEXT("/Game/UI/WB_StartMenu.WB_StartMenu_C"));
-	if (TitleWidgetClassRef.Class)
-	{
-		TitleWidgetClass = TitleWidgetClassRef.Class;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to load TitleWidgetClassRef"));
-	}
-	
-	static ConstructorHelpers::FClassFinder<UTutorialMenu> TutorialWidgetClassRef(TEXT("/Game/UI/WB_TutorialMenu.WB_TutorialMenu_C"));
-	if (TutorialWidgetClassRef.Class)
-	{
-		TutorialWidgetClass = TutorialWidgetClassRef.Class;
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to load TutorialWidgetClassRef"));
-	}
 
 	static ConstructorHelpers::FClassFinder<UMainMenu> MainWidgetClassRef(TEXT("/Game/UI/WB_MainMenu.WB_MainMenu_C"));
 	if (MainWidgetClassRef.Class)
@@ -75,26 +55,41 @@ void AAnimalIslandGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Pause Game
+	// UI Mode
 	APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
 	if(PlayerController)
 	{
-		PlayerController->SetPause(true);
-		FInputModeDataBase* InputMode = static_cast<FInputModeDataBase*>(new FInputModeUIOnly());
+		FInputModeDataBase* InputMode = static_cast<FInputModeDataBase*>(new FInputModeGameOnly());
 		PlayerController->SetInputMode(*InputMode);
-		PlayerController->bShowMouseCursor = true;
+		PlayerController->bShowMouseCursor = false;
 	}
-	// Start with Title
-	if(TitleWidget == nullptr)
+
+	// Load All Widget
+	if(MainWidgetClass)
 	{
-		if(TitleWidgetClass)
+		MainWidget = CreateWidget<UUserWidget>(GetWorld(), MainWidgetClass);
+		if(MainWidget)
 		{
-			TitleWidget = CreateWidget<UUserWidget>(GetWorld(), TitleWidgetClass);
+			MainWidget->AddToViewport();
 		}
 	}
-	if(TitleWidget)
+	if(SettingWidgetClass)
 	{
-		TitleWidget->AddToViewport();
+		SettingWidget = CreateWidget<UUserWidget>(GetWorld(), SettingWidgetClass);
+		if(SettingWidget)
+		{
+			SettingWidget->AddToViewport();
+			SettingWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
+	if(GameoverWidgetClass)
+	{
+		GameoverWidget = CreateWidget<UUserWidget>(GetWorld(), GameoverWidgetClass);
+		if(GameoverWidget)
+		{
+			GameoverWidget->AddToViewport();
+			GameoverWidget->SetVisibility(ESlateVisibility::Hidden);
+		}
 	}
 }
 
@@ -108,157 +103,9 @@ void AAnimalIslandGameMode::Restart()
 	}
 }
 
-// Convert UI
-void AAnimalIslandGameMode::ViewTutorialUI()
-{
-	if(TutorialWidget == nullptr)
-	{
-		if(TutorialWidgetClass)
-		{
-			TutorialWidget = CreateWidget<UUserWidget>(GetWorld(), TutorialWidgetClass);
-			if(TutorialWidget)
-			{
-				if(TitleWidget)
-				{
-					TitleWidget->RemoveFromParent();
-				}
-				TutorialWidget->AddToViewport();
-			}
-		}
-	}
-	else
-	{
-		if(TitleWidget)
-		{
-			TitleWidget->RemoveFromParent();
-		}
-		TutorialWidget->AddToViewport();
-	}
-}
-
-void AAnimalIslandGameMode::StartMainUI()
-{
-	if(MainWidget == nullptr)
-	{
-		if(MainWidgetClass)
-		{
-			MainWidget = CreateWidget<UMainMenu>(GetWorld(), MainWidgetClass);
-			if(MainWidget)
-			{
-				// 마우스 위치 들어가게 할 필요
-				APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-				if(PlayerController)
-				{
-					FInputModeDataBase* InputMode = static_cast<FInputModeDataBase*>(new FInputModeGameOnly());
-					PlayerController->SetInputMode(*InputMode);
-					PlayerController->bShowMouseCursor = false;
-					
-					PlayerController->SetPause(false);
-				}
-			
-				if(TutorialWidget)
-				{
-					TutorialWidget->RemoveFromParent();
-				}
-				MainWidget->AddToViewport();
-			}
-		}
-	}
-	else
-	{
-		// 마우스 위치 들어가게 할 필요
-		APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-		if(PlayerController)
-		{
-			FInputModeDataBase* InputMode = static_cast<FInputModeDataBase*>(new FInputModeGameOnly());
-			PlayerController->SetInputMode(*InputMode);
-			PlayerController->bShowMouseCursor = false;
-					
-			PlayerController->SetPause(false);
-		}
-		if(TutorialWidget)
-		{
-			TutorialWidget->RemoveFromParent();
-		}
-		MainWidget->AddToViewport();
-	}
-}
-
 void AAnimalIslandGameMode::ViewSettingUI()
 {
-	if(SettingWidget == nullptr)
-	{
-		if(SettingWidgetClass)
-		{
-			SettingWidget = CreateWidget<UUserWidget>(GetWorld(), SettingWidgetClass);
-			if(SettingWidget)
-			{
-				// 마우스 위치 해제 필요
-				APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-				if(PlayerController)
-				{
-					FInputModeDataBase* InputMode = static_cast<FInputModeDataBase*>(new FInputModeUIOnly());
-					PlayerController->SetInputMode(*InputMode);
-					PlayerController->bShowMouseCursor = true;
-					
-					PlayerController->SetPause(true);
-				}
-				if(MainWidget)
-				{
-					MainWidget->RemoveFromParent();
-				}
-				SettingWidget->AddToViewport();
-			}
-		}
-	}
-	else
-	{
-		// 마우스 위치 해제 필요
-	    APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	    if(PlayerController)
-	    {
-	        FInputModeDataBase* InputMode = static_cast<FInputModeDataBase*>(new FInputModeUIOnly());
-	        PlayerController->SetInputMode(*InputMode);
-	        PlayerController->bShowMouseCursor = true;
-	    	
-	    	PlayerController->SetPause(true);
-	    }
-		if(MainWidget)
-		{
-			MainWidget->RemoveFromParent();
-		}
-		SettingWidget->AddToViewport();
-	}
-}
-
-void AAnimalIslandGameMode::ViewGameoverUI()
-{
-	if(GameoverWidget == nullptr)
-	{
-		if(GameoverWidgetClass)
-		{
-			GameoverWidget = CreateWidget<UUserWidget>(GetWorld(), GameoverWidgetClass);
-			if(GameoverWidget)
-			{
-				// 마우스 위치 해제 필요
-				APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-				if(PlayerController)
-				{
-					FInputModeDataBase* InputMode = static_cast<FInputModeDataBase*>(new FInputModeUIOnly());
-					PlayerController->SetInputMode(*InputMode);
-					PlayerController->bShowMouseCursor = true;
-					
-					PlayerController->SetPause(true);
-				}
-				if(MainWidget)
-				{
-					MainWidget->RemoveFromParent();
-				}
-				GameoverWidget->AddToViewport();
-			}
-		}
-	}
-	else
+	if(IsValid(SettingWidget) && IsValid(MainWidget))
 	{
 		// 마우스 위치 해제 필요
 		APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
@@ -267,45 +114,48 @@ void AAnimalIslandGameMode::ViewGameoverUI()
 			FInputModeDataBase* InputMode = static_cast<FInputModeDataBase*>(new FInputModeUIOnly());
 			PlayerController->SetInputMode(*InputMode);
 			PlayerController->bShowMouseCursor = true;
-			
+
 			PlayerController->SetPause(true);
+			AAnimalIslandCharacter* Character = Cast<AAnimalIslandCharacter>(PlayerController->GetPawn());
+			if(Character && Character->PlayerHUD)
+			{
+				Character->PlayerHUD->SetVisibility(ESlateVisibility::Hidden);
+			}
 		}
-		if(MainWidget)
+
+		MainWidget->SetVisibility(ESlateVisibility::Hidden);
+		SettingWidget->SetVisibility(ESlateVisibility::Visible);
+	}
+}
+
+void AAnimalIslandGameMode::ViewGameoverUI()
+{
+	if(IsValid(GameoverWidget) && IsValid(MainWidget))
+	{
+		// 마우스 위치 해제 필요
+		APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+		if(PlayerController)
 		{
-			MainWidget->RemoveFromParent();
+			FInputModeDataBase* InputMode = static_cast<FInputModeDataBase*>(new FInputModeUIOnly());
+			PlayerController->SetInputMode(*InputMode);
+			PlayerController->bShowMouseCursor = true;
+
+			PlayerController->SetPause(true);
+			AAnimalIslandCharacter* Character = Cast<AAnimalIslandCharacter>(PlayerController->GetPawn());
+			if(Character && Character->PlayerHUD)
+			{
+				Character->PlayerHUD->SetVisibility(ESlateVisibility::Hidden);
+			}
 		}
-		GameoverWidget->AddToViewport();
+
+		MainWidget->SetVisibility(ESlateVisibility::Hidden);
+		GameoverWidget->SetVisibility(ESlateVisibility::Visible);
 	}
 }
 
 void AAnimalIslandGameMode::SettingToMainUI()
 {
-	if(MainWidget == nullptr)
-	{
-		if(MainWidgetClass)
-		{
-			MainWidget = CreateWidget<UUserWidget>(GetWorld(), MainWidgetClass);
-			if(MainWidget)
-			{
-				// 마우스 위치 해제 필요
-				APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-				if(PlayerController)
-				{
-					FInputModeDataBase* InputMode = static_cast<FInputModeDataBase*>(new FInputModeGameOnly());
-					PlayerController->SetInputMode(*InputMode);
-					PlayerController->bShowMouseCursor = false;
-
-					PlayerController->SetPause(false);
-				}
-				if(SettingWidget)
-				{
-					SettingWidget->RemoveFromParent();
-				}
-				MainWidget->AddToViewport();
-			}
-		}
-	}
-	else
+	if(IsValid(SettingWidget) && IsValid(MainWidget))
 	{
 		// 마우스 위치 해제 필요
 		APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
@@ -316,66 +166,29 @@ void AAnimalIslandGameMode::SettingToMainUI()
 			PlayerController->bShowMouseCursor = false;
 
 			PlayerController->SetPause(false);
+			AAnimalIslandCharacter* Character = Cast<AAnimalIslandCharacter>(PlayerController->GetPawn());
+			if(Character && Character->PlayerHUD)
+			{
+				Character->PlayerHUD->SetVisibility(ESlateVisibility::Visible);
+			}
 		}
-		if(SettingWidget)
-		{
-			SettingWidget->RemoveFromParent();
-		}
-		MainWidget->AddToViewport();
+
+		MainWidget->SetVisibility(ESlateVisibility::Visible);
+		SettingWidget->SetVisibility(ESlateVisibility::Hidden);
 	}
-	
 }
 
 void AAnimalIslandGameMode::SettingToTitleUI()
 {
-	if(TitleWidget == nullptr)
-	{
-		if(TitleWidgetClass)
-		{
-			TitleWidget = CreateWidget<UUserWidget>(GetWorld(), TitleWidgetClass);
-			if(TitleWidget)
-			{
-				if(SettingWidget)
-				{
-					SettingWidget->RemoveFromParent();
-				}
-				TitleWidget->AddToViewport();
-			}
-		}
-	}
-	else
-	{
-		if(SettingWidget)
-		{
-			SettingWidget->RemoveFromParent();
-		}
-		TitleWidget->AddToViewport();
-	}
+	UGameplayStatics::OpenLevel(this, FName("Title"));
 }
 
 void AAnimalIslandGameMode::GameoverToTitleUI()
 {
-	if(TitleWidget == nullptr)
-	{
-		if(TitleWidgetClass)
-		{
-			TitleWidget = CreateWidget<UUserWidget>(GetWorld(), TitleWidgetClass);
-			if(TitleWidget)
-			{
-				if(GameoverWidget)
-				{
-					GameoverWidget->RemoveFromParent();
-				}
-				TitleWidget->AddToViewport();
-			}
-		}
-	}
-	else
-	{
-		if(GameoverWidget)
-		{
-			GameoverWidget->RemoveFromParent();
-		}
-		TitleWidget->AddToViewport();
-	}
+	UGameplayStatics::OpenLevel(this, FName("Title"));
+}
+
+void AAnimalIslandGameMode::GameoverToMainUI()
+{
+	Restart();
 }

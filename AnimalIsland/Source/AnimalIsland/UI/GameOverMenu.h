@@ -23,11 +23,17 @@ public:
     TObjectPtr<class UButton> BackBtn;
 	
 	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<UButton> RestartBtn;
+	
+	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UTextBlock> MinuteTxt;
 	
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<UTextBlock> SecondTxt;
     
     UFUNCTION()
-    void ClickedBackBtn();
+	void ClickedBackBtn();
+	
+	UFUNCTION()
+	void ClickedRestartBtn();
 };
