@@ -25,6 +25,7 @@ void AItem_Green::ApplyEffect()
 		if (HitCharacter != nullptr)
 		{
 			Super::ApplyEffect();
+			HitCharacter->CoolItemTimeCnt = HitCharacter->CoolItemTime;
 			HitCharacter->bCoolTimeBuf = true;
 		}
 	}

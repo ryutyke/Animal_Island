@@ -14,6 +14,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "GJGameInstance.h"
+#include "UI/CharacterHUD.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -62,9 +63,9 @@ AAnimalIslandCharacter::AAnimalIslandCharacter()
 	FeedCooltime = 3.0f;
 	FeedCooltimeCnt = 0.0f;
 	SpeedItemTime = 5.0f;
-	SpeedItemTimeCnt = SpeedItemTime;
+	SpeedItemTimeCnt = 0;
 	CoolItemTime = 3.0f;
-	CoolItemTimeCnt = CoolItemTime;
+	CoolItemTimeCnt = 0;
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionFeedRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Feed.IA_Feed'"));
 	if (nullptr != InputActionFeedRef.Object)
@@ -113,7 +114,7 @@ void AAnimalIslandCharacter::Tick(float DeltaTime)
 		if (SpeedItemTimeCnt <= 0)
 		{
 			bSpeedUp = false;
-			SpeedItemTimeCnt = SpeedItemTime;
+			SpeedItemTimeCnt = 0.f;
 			GetCharacterMovement()->MaxWalkSpeed = 500.f;
 		}
 	}
@@ -125,7 +126,7 @@ void AAnimalIslandCharacter::Tick(float DeltaTime)
 		if (CoolItemTimeCnt <= 0)
 		{
 			bCoolTimeBuf = false;
-			CoolItemTimeCnt = CoolItemTime;
+			CoolItemTimeCnt = 0.f;
 		}
 	}
 }
@@ -149,6 +150,13 @@ void AAnimalIslandCharacter::Feed()
 
 }
 
+void AAnimalIslandCharacter::Damaged(int InDamage)
+{
+	Hp -= InDamage;
+	if (Hp < 0) Hp = 0;
+	PlayerHUD->UpdateLifeImage(Hp);
+}
+
 void AAnimalIslandCharacter::BeginPlay()
 {
 	// Call the base class  
@@ -162,6 +170,8 @@ void AAnimalIslandCharacter::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+
+	PlayerHUD->FillImageArray();
 }
 
 void AAnimalIslandCharacter::CheckIsDead()
@@ -187,6 +197,7 @@ void AAnimalIslandCharacter::GetHealItem()
 {
 	Hp += 25;
 	if (Hp > 100) Hp = 100;
+	PlayerHUD->UpdateLifeImage(Hp);
 }
 
 //////////////////////////////////////////////////////////////////////////
