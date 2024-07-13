@@ -35,6 +35,22 @@ AAnimal::AAnimal()
 		UE_LOG(LogTemp, Warning, TEXT("AAnimal: Failed to Load Skeletal Mesh"));
 	}
 
+	static ConstructorHelpers::FClassFinder<AActor> RedItemBPClassRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/BP_Item_Red.BP_Item_Red_C'"));
+	if (RedItemBPClassRef.Class)
+	{
+		RedItemBPClass = RedItemBPClassRef.Class;
+	}
+	static ConstructorHelpers::FClassFinder<AActor> GreenItemBPClassRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/BP_Item_Green.BP_Item_Green_C'"));
+	if (GreenItemBPClassRef.Class)
+	{
+		GreenItemBPClass = GreenItemBPClassRef.Class;
+	}
+	static ConstructorHelpers::FClassFinder<AActor> BlueItemBPClassRef(TEXT("/Script/Engine.Blueprint'/Game/Blueprint/BP_Item_Blue.BP_Item_Blue_C'"));
+	if (BlueItemBPClassRef.Class)
+	{
+		BlueItemBPClass = BlueItemBPClassRef.Class;
+	}
+
 	CurrentState = EAnimalState::Idle;
 	MoveSpeed = 1000.f;
 
@@ -99,7 +115,7 @@ bool AAnimal::OnFed()
 
 	if (bDropItem)
 	{
-		//DropItem();
+		DropItem();
 		return Destroy();
 	}
 
@@ -140,7 +156,22 @@ void AAnimal::CheckIsDead()
 
 void AAnimal::DropItem()
 {
-
+	int RandVar = FMath::RandRange(1, 3);
+	FVector SpawnLocation = GetActorLocation();
+	SpawnLocation.Z = 30.0f;
+	if (RandVar == 1)
+	{
+		GetWorld()->SpawnActor<AActor>(RedItemBPClass, SpawnLocation, GetActorRotation());
+	}
+	if (RandVar == 2)
+	{
+		GetWorld()->SpawnActor<AActor>(GreenItemBPClass, SpawnLocation, GetActorRotation());
+	}
+	if (RandVar == 3)
+	{
+		GetWorld()->SpawnActor<AActor>(BlueItemBPClass, SpawnLocation, GetActorRotation());
+	}
+	
 }
 
 void AAnimal::SetState(EAnimalState NewState)

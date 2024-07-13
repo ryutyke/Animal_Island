@@ -25,6 +25,8 @@ AItemBase::AItemBase()
 	MeshComp->SetupAttachment(RootComponent);
 
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &AItemBase::OnBeginOverlap);
+
+	SetLifeSpan(10.0f);
 }
 
 // Called when the game starts or when spawned

@@ -67,6 +67,15 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components", meta = (AllowPrivateAccess = "true"))
 	class USkeletalMeshComponent* SkeletalMesh;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> RedItemBPClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> GreenItemBPClass;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AActor> BlueItemBPClass;
 private:
 	UPROPERTY()
 	EAnimalState CurrentState;
