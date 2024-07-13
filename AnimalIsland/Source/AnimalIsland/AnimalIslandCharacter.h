@@ -124,5 +124,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	float MouseSensitivity;
+
+	UPROPERTY(BlueprintReadWrite)
+	float Score;
 };
 

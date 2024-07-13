@@ -92,10 +92,13 @@ AAnimalIslandCharacter::AAnimalIslandCharacter()
 	}
 
 	MouseSensitivity = 1.f;
+
+	Score = 0.0f;
 }
 
 void AAnimalIslandCharacter::Tick(float DeltaTime)
 {
+	Score += DeltaTime;
 	if (bIsFeedCool)
 	{
 		FeedCooltimeCnt -= DeltaTime;
@@ -181,7 +184,9 @@ void AAnimalIslandCharacter::CheckIsDead()
 	//UE_LOG(LogTemp, Log, TEXT("%d"), Hp);
 	if (Hp <= 0)
 	{
+		SetActorTickEnabled(false);
 		UE_LOG(LogTemp, Log, TEXT("GameOver"));
+		Cast<UGJGameInstance>(GetGameInstance())->BestScoreUpdate(Score);
 		UGameplayStatics::PlaySound2D(this, DyingSound, CastChecked<UGJGameInstance>(GetWorld()->GetGameInstance())->SFXVolume);
 		AAnimalIslandGameMode* GameMode = Cast<AAnimalIslandGameMode>(GetWorld()->GetAuthGameMode());
 		if(GameMode)
