@@ -45,6 +45,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = Animation)
 	TObjectPtr<class UAnimMontage> ThrowMontage;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+	TObjectPtr<class USoundCue> DyingSound;
+
 public:
 	AAnimalIslandCharacter();
 	

@@ -82,6 +82,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
 	TObjectPtr<class USoundCue> DeadSound;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+	TObjectPtr<class USoundCue> ItemSpawnSound;
 private:
 	UPROPERTY()
 	EAnimalState CurrentState;

@@ -4,10 +4,15 @@
 #include "Item_Red.h"
 #include "AnimalIslandCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 AItem_Red::AItem_Red()
 {
-	
+	static ConstructorHelpers::FObjectFinder<USoundCue> EatenSoundObject(TEXT("/Script/Engine.SoundCue'/Game/Assets/SFX/Ate_RedItem_Cue.Ate_RedItem_Cue'"));
+	if (nullptr != EatenSoundObject.Object)
+	{
+		EatenSound = EatenSoundObject.Object;
+	}
 }
 
 void AItem_Red::ApplyEffect()
@@ -19,6 +24,7 @@ void AItem_Red::ApplyEffect()
 
 		if (HitCharacter != nullptr)
 		{
+			Super::ApplyEffect();
 			HitCharacter->GetHealItem();
 		}
 	}
