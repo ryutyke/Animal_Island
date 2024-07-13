@@ -52,8 +52,14 @@ AAnimalIslandCharacter::AAnimalIslandCharacter()
 
 	Hp = 100;
 	bIsFeedCool = false;
+	bSpeedUp = false;
+	bCoolTimeBuf = false;
 	FeedCooltime = 3.0f;
 	FeedCooltimeCnt = FeedCooltime;
+	SpeedItemTime = 5.0f;
+	SpeedItemTimeCnt = SpeedItemTime;
+	CoolItemTime = 3.0f;
+	CoolItemTimeCnt = CoolItemTime;
 
 	static ConstructorHelpers::FObjectFinder<UInputAction> InputActionFeedRef(TEXT("/Script/EnhancedInput.InputAction'/Game/ThirdPerson/Input/Actions/IA_Feed.IA_Feed'"));
 	if (nullptr != InputActionFeedRef.Object)
@@ -79,10 +85,36 @@ void AAnimalIslandCharacter::Tick(float DeltaTime)
 	if (bIsFeedCool)
 	{
 		FeedCooltimeCnt -= DeltaTime;
+
+		if (bCoolTimeBuf) FeedCooltimeCnt = 0;
+		
 		if (FeedCooltimeCnt <= 0)
 		{
 			bIsFeedCool = false;
 			FeedCooltimeCnt = 0.f;
+		}
+	}
+
+	if (bSpeedUp)
+	{
+		GetCharacterMovement()->MaxWalkSpeed = 1000.f;
+		SpeedItemTimeCnt -= DeltaTime;
+		if (SpeedItemTimeCnt <= 0)
+		{
+			bSpeedUp = false;
+			SpeedItemTimeCnt = SpeedItemTime;
+			GetCharacterMovement()->MaxWalkSpeed = 500.f;
+		}
+	}
+
+	if (bCoolTimeBuf)
+	{
+		// ½ºÅ³ ÄðÅ¸ÀÓ
+		CoolItemTimeCnt -= DeltaTime;
+		if (CoolItemTimeCnt <= 0)
+		{
+			bCoolTimeBuf = false;
+			CoolItemTimeCnt = CoolItemTime;
 		}
 	}
 }
@@ -131,6 +163,12 @@ void AAnimalIslandCharacter::CheckIsDead()
 		//Destroy();
 
 	}
+}
+
+void AAnimalIslandCharacter::GetHealItem()
+{
+	Hp += 25;
+	if (Hp > 100) Hp = 100;
 }
 
 //////////////////////////////////////////////////////////////////////////
