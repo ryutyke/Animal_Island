@@ -13,6 +13,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "GJGameInstance.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -169,7 +170,7 @@ void AAnimalIslandCharacter::CheckIsDead()
 	if (Hp <= 0)
 	{
 		UE_LOG(LogTemp, Log, TEXT("GameOver"));
-		UGameplayStatics::PlaySound2D(this, DyingSound);
+		UGameplayStatics::PlaySound2D(this, DyingSound, CastChecked<UGJGameInstance>(GetWorld()->GetGameInstance())->SFXVolume);
 		AAnimalIslandGameMode* GameMode = Cast<AAnimalIslandGameMode>(GetWorld()->GetAuthGameMode());
 		if(GameMode)
 		{

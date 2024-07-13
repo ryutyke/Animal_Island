@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 #include "AnimalIslandCharacter.h"
+#include "GJGameInstance.h"
 
 // Sets default values
 AAnimal::AAnimal()
@@ -122,7 +123,7 @@ bool AAnimal::OnFed()
 		return false;
 	}
 
-	UGameplayStatics::PlaySound2D(this, FeedSound);
+	UGameplayStatics::PlaySound2D(this, FeedSound, CastChecked<UGJGameInstance>(GetWorld()->GetGameInstance())->SFXVolume);
 
 	SetState(EAnimalState::Hit);
 
@@ -166,7 +167,7 @@ void AAnimal::CheckIsDead()
 		SetState(EAnimalState::Dead);
 		if (DeadSound != nullptr)
 		{
-			UGameplayStatics::PlaySound2D(this, DeadSound);
+			UGameplayStatics::PlaySound2D(this, DeadSound, CastChecked<UGJGameInstance>(GetWorld()->GetGameInstance())->SFXVolume);
 		}
 		UE_LOG(LogTemp, Log, TEXT("Animal Die"));
 		Destroy();
@@ -180,7 +181,7 @@ void AAnimal::DropItem()
 	SpawnLocation.Z = 30.0f;
 
 	// ¼Ò¸®
-	UGameplayStatics::PlaySound2D(this, ItemSpawnSound);
+	UGameplayStatics::PlaySound2D(this, ItemSpawnSound, CastChecked<UGJGameInstance>(GetWorld()->GetGameInstance())->SFXVolume);
 
 	if (RandVar == 1)
 	{

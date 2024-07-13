@@ -7,6 +7,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
+#include "GJGameInstance.h"
 
 // Sets default values
 AItemBase::AItemBase()
@@ -49,7 +50,7 @@ void AItemBase::ApplyEffect()
 {
 	if (EatenSound != nullptr)
 	{
-		UGameplayStatics::PlaySound2D(this, EatenSound);
+		UGameplayStatics::PlaySound2D(this, EatenSound, CastChecked<UGJGameInstance>(GetWorld()->GetGameInstance())->SFXVolume);
 	}
 }
 
