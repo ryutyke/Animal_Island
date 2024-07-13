@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "AnimalIslandCharacter.h"
+
+#include "AnimalIslandGameMode.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -159,6 +161,12 @@ void AAnimalIslandCharacter::CheckIsDead()
 	if (Hp <= 0)
 	{
 		UE_LOG(LogTemp, Log, TEXT("GameOver"));
+		AAnimalIslandGameMode* GameMode = Cast<AAnimalIslandGameMode>(GetWorld()->GetAuthGameMode());
+		if(GameMode)
+		{
+			GameMode->ViewGameoverUI();
+		}
+		
 		Cast<APlayerController>(GetController())->SetPause(true);
 		//Destroy();
 

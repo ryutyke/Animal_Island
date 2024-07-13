@@ -38,6 +38,8 @@ private:
 	TSubclassOf<class UGameOverMenu> GameoverWidgetClass;
 
 public:
+	
+	
 	void ViewTutorialUI();
 	void StartMainUI();
 	void ViewSettingUI();
