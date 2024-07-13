@@ -2,10 +2,9 @@
 
 #include "AnimalIslandGameMode.h"
 #include "AnimalIslandCharacter.h"
-#include "UObject/ConstructorHelpers.h"
 #include "Kismet/GameplayStatics.h"
-#include "UI/StartMenu.h"
-#include "UI/TutorialMenu.h"
+#include "UI/CharacterHUD.h"
+#include "UObject/ConstructorHelpers.h"
 #include "UI/MainMenu.h"
 #include "UI/SettingMenu.h"
 #include "UI/GameOverMenu.h"
@@ -20,25 +19,6 @@ AAnimalIslandGameMode::AAnimalIslandGameMode()
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
 
-	// static ConstructorHelpers::FClassFinder<UStartMenu> TitleWidgetClassRef(TEXT("/Game/UI/WB_StartMenu.WB_StartMenu_C"));
-	// if (TitleWidgetClassRef.Class)
-	// {
-	// 	TitleWidgetClass = TitleWidgetClassRef.Class;
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("Failed to load TitleWidgetClassRef"));
-	// }
-	//
-	// static ConstructorHelpers::FClassFinder<UTutorialMenu> TutorialWidgetClassRef(TEXT("/Game/UI/WB_TutorialMenu.WB_TutorialMenu_C"));
-	// if (TutorialWidgetClassRef.Class)
-	// {
-	// 	TutorialWidgetClass = TutorialWidgetClassRef.Class;
-	// }
-	// else
-	// {
-	// 	UE_LOG(LogTemp, Warning, TEXT("Failed to load TutorialWidgetClassRef"));
-	// }
 
 	static ConstructorHelpers::FClassFinder<UMainMenu> MainWidgetClassRef(TEXT("/Game/UI/WB_MainMenu.WB_MainMenu_C"));
 	if (MainWidgetClassRef.Class)
@@ -75,16 +55,15 @@ void AAnimalIslandGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Release Game
-	// APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
-	// if(PlayerController)
-	// {
-	// 	FInputModeDataBase* InputMode = static_cast<FInputModeDataBase*>(new FInputModeGameOnly());
-	// 	PlayerController->SetInputMode(*InputMode);
-	// 	PlayerController->bShowMouseCursor = false;
-	// 	//PlayerController->SetPause(false);
-	// }
-	
+	// UI Mode
+	APlayerController* PlayerController = Cast<APlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+	if(PlayerController)
+	{
+		FInputModeDataBase* InputMode = static_cast<FInputModeDataBase*>(new FInputModeGameOnly());
+		PlayerController->SetInputMode(*InputMode);
+		PlayerController->bShowMouseCursor = false;
+	}
+
 	// Load All Widget
 	if(MainWidgetClass)
 	{
@@ -92,7 +71,6 @@ void AAnimalIslandGameMode::BeginPlay()
 		if(MainWidget)
 		{
 			MainWidget->AddToViewport();
-			MainWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
 	if(SettingWidgetClass)
@@ -138,6 +116,11 @@ void AAnimalIslandGameMode::ViewSettingUI()
 			PlayerController->bShowMouseCursor = true;
 
 			PlayerController->SetPause(true);
+			AAnimalIslandCharacter* Character = Cast<AAnimalIslandCharacter>(PlayerController->GetPawn());
+			if(Character && Character->PlayerHUD)
+			{
+				Character->PlayerHUD->SetVisibility(ESlateVisibility::Hidden);
+			}
 		}
 
 		MainWidget->SetVisibility(ESlateVisibility::Hidden);
@@ -158,6 +141,11 @@ void AAnimalIslandGameMode::ViewGameoverUI()
 			PlayerController->bShowMouseCursor = true;
 
 			PlayerController->SetPause(true);
+			AAnimalIslandCharacter* Character = Cast<AAnimalIslandCharacter>(PlayerController->GetPawn());
+			if(Character && Character->PlayerHUD)
+			{
+				Character->PlayerHUD->SetVisibility(ESlateVisibility::Hidden);
+			}
 		}
 
 		MainWidget->SetVisibility(ESlateVisibility::Hidden);
@@ -178,6 +166,11 @@ void AAnimalIslandGameMode::SettingToMainUI()
 			PlayerController->bShowMouseCursor = false;
 
 			PlayerController->SetPause(false);
+			AAnimalIslandCharacter* Character = Cast<AAnimalIslandCharacter>(PlayerController->GetPawn());
+			if(Character && Character->PlayerHUD)
+			{
+				Character->PlayerHUD->SetVisibility(ESlateVisibility::Visible);
+			}
 		}
 
 		MainWidget->SetVisibility(ESlateVisibility::Visible);

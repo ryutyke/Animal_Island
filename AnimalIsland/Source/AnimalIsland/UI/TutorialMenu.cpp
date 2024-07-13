@@ -3,9 +3,11 @@
 
 #include "UI/TutorialMenu.h"
 
-#include "AnimalIslandGameMode.h"
+#include "TitleGameMode.h"
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
+
+class ATitleGameMode;
 
 UTutorialMenu::UTutorialMenu(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -19,7 +21,7 @@ void UTutorialMenu::NativeConstruct()
 
 void UTutorialMenu::ClickedGameStart()
 {
-	AAnimalIslandGameMode* GameMode = Cast<AAnimalIslandGameMode>(GetWorld()->GetAuthGameMode());
+	ATitleGameMode* GameMode = Cast<ATitleGameMode>(GetWorld()->GetAuthGameMode());
 	if(GameMode)
 	{
 		UGameplayStatics::OpenLevel(this, FName("ThirdPersonMap"));

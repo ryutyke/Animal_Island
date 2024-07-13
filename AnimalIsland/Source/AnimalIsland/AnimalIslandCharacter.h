@@ -93,7 +93,8 @@ public:
 	UPROPERTY()
 	uint8 bSpeedUp : 1;
 
-	
+	UPROPERTY(BlueprintReadWrite)
+	TObjectPtr<class UCharacterHUD> PlayerHUD;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = Cooltime)
 	float SpeedItemTime;
