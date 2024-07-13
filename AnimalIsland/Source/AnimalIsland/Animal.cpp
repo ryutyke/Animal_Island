@@ -5,6 +5,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 #include "AnimalIslandCharacter.h"
 
 // Sets default values
@@ -59,12 +60,18 @@ AAnimal::AAnimal()
 	bIsFed = false;
 
 	bDropItem = false;
+
+	static ConstructorHelpers::FObjectFinder<USoundCue> FeedSoundObject(TEXT("/Script/Engine.SoundCue'/Game/Assets/SFX/Animal_Fed_Cue.Animal_Fed_Cue'"));
+	if (nullptr != FeedSoundObject.Object)
+	{
+		FeedSound = FeedSoundObject.Object;
+	}
 }
 
 // Called when the game starts or when spawned
 void AAnimal::BeginPlay()
 {
-	int temp = FMath::RandRange(0, 9);
+	int temp = FMath::RandRange(0, 2);
 	if (temp == 0)
 	{
 		bDropItem = true;
@@ -109,6 +116,8 @@ bool AAnimal::OnFed()
 		return false;
 	}
 
+	UGameplayStatics::PlaySound2D(this, FeedSound);
+
 	SetState(EAnimalState::Hit);
 
 	bIsFed = true;
@@ -149,6 +158,10 @@ void AAnimal::CheckIsDead()
 	if (CurrentHp <= 0)
 	{
 		SetState(EAnimalState::Dead);
+		if (DeadSound != nullptr)
+		{
+			UGameplayStatics::PlaySound2D(this, DeadSound);
+		}
 		UE_LOG(LogTemp, Log, TEXT("Animal Die"));
 		Destroy();
 	}

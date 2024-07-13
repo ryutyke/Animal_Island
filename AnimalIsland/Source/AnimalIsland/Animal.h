@@ -76,6 +76,12 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AActor> BlueItemBPClass;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+	TObjectPtr<class USoundCue> FeedSound;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, meta = (AllowPrivateAccess = true))
+	TObjectPtr<class USoundCue> DeadSound;
 private:
 	UPROPERTY()
 	EAnimalState CurrentState;
