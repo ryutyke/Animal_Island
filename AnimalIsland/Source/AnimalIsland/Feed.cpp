@@ -5,6 +5,8 @@
 #include "Components/SphereComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 
 // Sets default values
 AFeed::AFeed()
@@ -25,6 +27,13 @@ AFeed::AFeed()
 	MeshComp->SetupAttachment(RootComponent);
 
 	SphereComp->OnComponentBeginOverlap.AddDynamic(this, &AFeed::OnBeginOverlap);
+
+	// Effect
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NiagaraEffectRef (TEXT("/Script/Niagara.NiagaraSystem'/Game/Assets/VFX/VFX_Heart.VFX_Heart'"));
+	if(NiagaraEffectRef.Object)
+	{
+		NiagaraEffect = NiagaraEffectRef.Object;
+	}
 }
 
 // Called when the game starts or when spawned
@@ -65,6 +74,17 @@ void AFeed::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		{
 			if (FeedInterface->OnFed())
 			{
+				if(NiagaraEffect)
+				{
+					FVector Location = GetActorLocation();
+					FRotator Rotation = GetActorRotation();
+					UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraEffect, Location, Rotation, FVector(5.0f), true, true);
+					if(NiagaraComp)
+					{
+						NiagaraComp->SetAutoDestroy(true);
+					}
+					UE_LOG(LogTemp, Warning, TEXT("NiagaraComp"));
+				}
 				this->OnEaten();
 			}
 		}
