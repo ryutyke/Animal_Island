@@ -78,7 +78,12 @@ void AFeed::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 				{
 					FVector Location = GetActorLocation();
 					FRotator Rotation = GetActorRotation();
-					//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraEffect, Location, Rotation);
+					UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraEffect, Location, Rotation, FVector(5.0f), true, true);
+					if(NiagaraComp)
+					{
+						NiagaraComp->SetAutoDestroy(true);
+					}
+					UE_LOG(LogTemp, Warning, TEXT("NiagaraComp"));
 				}
 				this->OnEaten();
 			}

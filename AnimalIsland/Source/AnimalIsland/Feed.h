@@ -28,7 +28,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly)
 	float Speed = 2000.0f;
-
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
 	TObjectPtr<class UNiagaraSystem> NiagaraEffect;
 
