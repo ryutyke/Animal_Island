@@ -98,6 +98,7 @@ AAnimalIslandCharacter::AAnimalIslandCharacter()
 
 void AAnimalIslandCharacter::Tick(float DeltaTime)
 {
+	CheckIsDead();
 	Score += DeltaTime;
 	if (bIsFeedCool)
 	{
@@ -182,7 +183,7 @@ void AAnimalIslandCharacter::BeginPlay()
 void AAnimalIslandCharacter::CheckIsDead()
 {
 	//UE_LOG(LogTemp, Log, TEXT("%d"), Hp);
-	if (Hp <= 0)
+	if (Hp <= 0 || GetActorLocation().Z < -240.f)
 	{
 		SetActorTickEnabled(false);
 		UE_LOG(LogTemp, Log, TEXT("GameOver"));

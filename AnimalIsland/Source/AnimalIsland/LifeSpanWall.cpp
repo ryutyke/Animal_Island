@@ -4,6 +4,9 @@
 #include "LifeSpanWall.h"
 #include "Components/StaticMeshComponent.h"
 #include "AnimalIslandCharacter.h"
+#include "Animal.h"
+#include "AnimalIslandGameMode.h"
+#include "GJGameInstance.h"
 
 // Sets default values
 ALifeSpanWall::ALifeSpanWall()
@@ -12,8 +15,8 @@ ALifeSpanWall::ALifeSpanWall()
 	PrimaryActorTick.bCanEverTick = true;
 
 	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>("MeshComp");
-	MeshComp->SetWorldScale3D(FVector(40.f, 40.f, 40.f));
-	RootComponent = MeshComp;
+	MeshComp->SetWorldScale3D(FVector(59.f, 59.f, 40.f));
+	//MeshComp->BodyInstance.SetCollisionProfileName(TEXT("EdgeWall"));
 
 	MeshComp->OnComponentBeginOverlap.AddDynamic(this, &ALifeSpanWall::OnBeginOverlap);
 
@@ -23,7 +26,7 @@ ALifeSpanWall::ALifeSpanWall()
 void ALifeSpanWall::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	MeshComp->BodyInstance.SetCollisionProfileName(TEXT("EdgeWall"));
 }
 
 // Called every frame
@@ -37,16 +40,25 @@ void ALifeSpanWall::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 {
 	if ((OtherActor != this) && (OtherActor != nullptr))
 	{
-		AAnimalIslandCharacter* HitCharacter = Cast<AAnimalIslandCharacter>(OtherActor);
-		if (HitCharacter != nullptr)
-		{
-			// 게임오버
-		}
+		//AAnimalIslandCharacter* HitCharacter = Cast<AAnimalIslandCharacter>(OtherActor);
+		//if (HitCharacter != nullptr)
+		//{
+		//	// 게임오버
+		//	UE_LOG(LogTemp, Warning, TEXT("Character Wall"));
+		//	Cast<UGJGameInstance>(GetGameInstance())->BestScoreUpdate(HitCharacter->Score);
+		//	AAnimalIslandGameMode* GameMode = Cast<AAnimalIslandGameMode>(GetWorld()->GetAuthGameMode());
+		//	if (GameMode)
+		//	{
+		//		GameMode->ViewGameoverUI();
+		//	}
+		//	Cast<APlayerController>(HitCharacter->GetController())->SetPause(true);
+		//}
 
-		else
+		AAnimal* HitAnimal = Cast<AAnimal>(OtherActor);
+		if (HitAnimal != nullptr)
 		{
-			Destroy();
-			// visibility 없애고 setlifespan해서 안정적으로 만들어도
+			//UE_LOG(LogTemp, Warning, TEXT("Animal Destroy"));
+			HitAnimal->Destroy();
 		}
 	}
 
