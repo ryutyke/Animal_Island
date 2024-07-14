@@ -10,7 +10,7 @@ ASpawnerAnimal::ASpawnerAnimal()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
-	SpawnRange = 2000.0f;
+	SpawnRange = 4250.0f;
 
 	SpawnDuration = 3.5f;
 	SpawnDurationCnt = SpawnDuration;
@@ -54,7 +54,7 @@ ASpawnerAnimal::ASpawnerAnimal()
 		TigerClass = TigerClassRef.Class;
 	}
 
-	SpawnNum = 10;
+	SpawnNum = 22;
 	SpawnCnt = 0;
 
 }
@@ -109,15 +109,26 @@ void ASpawnerAnimal::Spawn()
 
 FVector ASpawnerAnimal::CalculateRandomInCirclePosition() const
 {
+	int RandVal = FMath::RandRange(0, 1);
+	
     float RandomAngle = FMath::RandRange(0.0f, 360.0f);
-    float RandomRadius = FMath::RandRange(0.0f, 200.f);
+    
+	float RandomRadius;
+	if (RandVal == 0)
+	{
+		RandomRadius = FMath::RandRange(0.0f, 200.f);
+	}
+	else
+	{
+		RandomRadius = FMath::RandRange(200.f, 1000.f);
+	}
     RandomRadius += SpawnRange;
     
     float Radian = FMath::DegreesToRadians(RandomAngle);
     
     float RandX = PlayerPosition.X + RandomRadius * FMath::Cos(Radian);
     float RandY = PlayerPosition.Y + RandomRadius * FMath::Sin(Radian);
-    float RandZ = 0.f;
+    float RandZ = -260.f;
     //float RandZ = PlayerPosition.Z;
     
 	return FVector(RandX, RandY, RandZ);

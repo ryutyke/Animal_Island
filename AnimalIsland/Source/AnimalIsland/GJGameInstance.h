@@ -20,7 +20,7 @@ public:
 	float SFXVolume;
 	UPROPERTY(BlueprintReadWrite)
 	float BGMVolume;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 	float BestScore;
 
 	void BestScoreUpdate(float InScore);

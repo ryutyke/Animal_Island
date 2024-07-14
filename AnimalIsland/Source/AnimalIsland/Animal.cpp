@@ -8,6 +8,9 @@
 #include "Sound/SoundCue.h"
 #include "AnimalIslandCharacter.h"
 #include "GJGameInstance.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
+#include "NiagaraSystem.h"
 
 // Sets default values
 AAnimal::AAnimal()
@@ -62,7 +65,7 @@ AAnimal::AAnimal()
 
 	bDropItem = false;
 
-	static ConstructorHelpers::FObjectFinder<USoundCue> FeedSoundObject(TEXT("/Script/Engine.SoundCue'/Game/Assets/SFX/Animal_Fed_Cue.Animal_Fed_Cue'"));
+	static ConstructorHelpers::FObjectFinder<USoundCue> FeedSoundObject(TEXT("/Script/Engine.SoundCue'/Game/Assets/SFX/AnimalAteSound_Cue.AnimalAteSound_Cue'"));
 	if (nullptr != FeedSoundObject.Object)
 	{
 		FeedSound = FeedSoundObject.Object;
@@ -73,20 +76,39 @@ AAnimal::AAnimal()
 	{
 		ItemSpawnSound = ItemSpawnSoundObject.Object;
 	}
+
+	// Effect
+	static ConstructorHelpers::FObjectFinder<UNiagaraSystem> NiagaraEffectRef (TEXT("/Script/Niagara.NiagaraSystem'/Game/Assets/VFX/VFX_Shine.VFX_Shine'"));
+	if(NiagaraEffectRef.Object)
+	{
+		NiagaraEffect = NiagaraEffectRef.Object;
+		//UE_LOG(LogTemp, Warning, TEXT("Succeed Loading NiagaraEffect"));
+	}
+
+	NiagaraComp = CreateDefaultSubobject<UNiagaraComponent>(TEXT("NiagaraComponent"));
+	NiagaraComp->SetupAttachment(RootComponent);
+
+	NiagaraComp->SetAsset(NiagaraEffect);
+	NiagaraComp->SetRelativeScale3D(FVector(1, 1, 1));
+	NiagaraComp->Deactivate();
 }
 
 // Called when the game starts or when spawned
 void AAnimal::BeginPlay()
 {
-	int temp = FMath::RandRange(0, 2);
-	if (temp == 0)
+	NiagaraComp->Deactivate();
+	int temp = FMath::RandRange(0, 9);
+	if (temp <= 3)
 	{
 		bDropItem = true;
+		// Niagara
+		NiagaraComp->Activate();
+		UE_LOG(LogTemp, Warning, TEXT("Activate NiagaraEffect %d"), bDropItem);
 	}
 
 	Super::BeginPlay();
 	CurrentHp = MaxHp;
-	SetLifeSpan(10.f);
+	//SetLifeSpan(10.f);
 
 	SetState(EAnimalState::Idle);
 
@@ -176,24 +198,24 @@ void AAnimal::CheckIsDead()
 
 void AAnimal::DropItem()
 {
-	int RandVar = FMath::RandRange(1, 3);
+	int RandVar = FMath::RandRange(0, 9);
 	FVector SpawnLocation = GetActorLocation();
-	SpawnLocation.Z = 30.0f;
+	SpawnLocation.Z = -160.0f;
 
-	// ¼Ò¸®
+	// ï¿½Ò¸ï¿½
 	UGameplayStatics::PlaySound2D(this, ItemSpawnSound, CastChecked<UGJGameInstance>(GetWorld()->GetGameInstance())->SFXVolume);
 
-	if (RandVar == 1)
+	if (RandVar <= 4)
+	{
+		GetWorld()->SpawnActor<AActor>(BlueItemBPClass, SpawnLocation, GetActorRotation());
+	}
+	else if (RandVar <= 8)
 	{
 		GetWorld()->SpawnActor<AActor>(RedItemBPClass, SpawnLocation, GetActorRotation());
 	}
-	if (RandVar == 2)
+	else
 	{
 		GetWorld()->SpawnActor<AActor>(GreenItemBPClass, SpawnLocation, GetActorRotation());
-	}
-	if (RandVar == 3)
-	{
-		GetWorld()->SpawnActor<AActor>(BlueItemBPClass, SpawnLocation, GetActorRotation());
 	}
 	
 }
@@ -253,7 +275,7 @@ void AAnimal::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* O
 			AAnimal* HitAnimal = Cast<AAnimal>(OtherActor);
 			if (HitAnimal != nullptr)
 			{
-				//µ¥¹ÌÁö °è»ê
+				//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½
 				int Damage = (this->CurrentHp >= HitAnimal->CurrentHp) ? HitAnimal->CurrentHp : this->CurrentHp;
 				this->CurrentHp -= Damage;
 				HitAnimal->CurrentHp -= Damage;

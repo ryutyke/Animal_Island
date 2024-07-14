@@ -27,6 +27,12 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	TObjectPtr<class UNiagaraComponent> NiagaraComp;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Effects")
+	TObjectPtr<class UNiagaraSystem> NiagaraEffect;
 
 public:	
 	// Called every frame
