@@ -21,6 +21,12 @@ public:
 	UPROPERTY(meta = (BindWidget))
 	TObjectPtr<class UButton> StartBtn;
 	
+	UPROPERTY(meta = (BindWidget))
+	TObjectPtr<class UButton> EasyBtn;
+
 	UFUNCTION()
 	void ClickedGameStart();
+
+	UFUNCTION()
+	void ClickedGameStartEasy();
 };

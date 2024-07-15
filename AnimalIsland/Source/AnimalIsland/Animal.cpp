@@ -96,8 +96,20 @@ AAnimal::AAnimal()
 // Called when the game starts or when spawned
 void AAnimal::BeginPlay()
 {
+	if (Cast<UGJGameInstance>(GetGameInstance())->bIsEasy)
+	{
+		bIsEasy = true;
+	}
+
 	NiagaraComp->Deactivate();
+
 	int temp = FMath::RandRange(0, 9);
+	
+	if (bIsEasy)
+	{
+		temp = FMath::RandRange(0, 5);
+	}
+	
 	if (temp <= 3)
 	{
 		bDropItem = true;
@@ -205,17 +217,36 @@ void AAnimal::DropItem()
 	// �Ҹ�
 	UGameplayStatics::PlaySound2D(this, ItemSpawnSound, CastChecked<UGJGameInstance>(GetWorld()->GetGameInstance())->SFXVolume);
 
-	if (RandVar <= 4)
+	if (bIsEasy)
 	{
-		GetWorld()->SpawnActor<AActor>(BlueItemBPClass, SpawnLocation, GetActorRotation());
+		if (RandVar <= 3)
+		{
+			GetWorld()->SpawnActor<AActor>(BlueItemBPClass, SpawnLocation, GetActorRotation());
+		}
+		else if (RandVar <= 7)
+		{
+			GetWorld()->SpawnActor<AActor>(RedItemBPClass, SpawnLocation, GetActorRotation());
+		}
+		else
+		{
+			GetWorld()->SpawnActor<AActor>(GreenItemBPClass, SpawnLocation, GetActorRotation());
+		}
 	}
-	else if (RandVar <= 8)
-	{
-		GetWorld()->SpawnActor<AActor>(RedItemBPClass, SpawnLocation, GetActorRotation());
-	}
+	
 	else
 	{
-		GetWorld()->SpawnActor<AActor>(GreenItemBPClass, SpawnLocation, GetActorRotation());
+		if (RandVar <= 4)
+		{
+			GetWorld()->SpawnActor<AActor>(BlueItemBPClass, SpawnLocation, GetActorRotation());
+		}
+		else if (RandVar <= 8)
+		{
+			GetWorld()->SpawnActor<AActor>(RedItemBPClass, SpawnLocation, GetActorRotation());
+		}
+		else
+		{
+			GetWorld()->SpawnActor<AActor>(GreenItemBPClass, SpawnLocation, GetActorRotation());
+		}
 	}
 	
 }

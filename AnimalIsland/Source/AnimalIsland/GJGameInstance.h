@@ -23,5 +23,12 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	float BestScore;
 
+	UPROPERTY(BlueprintReadWrite)
+	float BestScoreEasy;
+
+	UPROPERTY(BlueprintReadWrite)
+	uint8 bIsEasy : 1;
+
 	void BestScoreUpdate(float InScore);
+	void BestScoreUpdateEasy(float InScore);
 };

@@ -24,6 +24,7 @@ protected:
 	TObjectPtr<UUserWidget> MainWidget;
 	TObjectPtr<UUserWidget> SettingWidget;
 	TObjectPtr<UUserWidget> GameoverWidget;
+	TObjectPtr<UUserWidget> GameoverWidgetEasy;
 private:
 	UPROPERTY()
 	TSubclassOf<class UMainMenu> MainWidgetClass;
@@ -31,6 +32,8 @@ private:
 	TSubclassOf<class USettingMenu> SettingWidgetClass;
 	UPROPERTY()
 	TSubclassOf<class UGameOverMenu> GameoverWidgetClass;
+	UPROPERTY()
+	TSubclassOf<class UGameOverMenu> GameoverWidgetHardClass;
 
 public:
 	

@@ -48,6 +48,9 @@ public:
 	UFUNCTION()
 	void CheckIsDead();
 
+	UPROPERTY(BlueprintReadWrite)
+	uint8 bIsEasy : 1;
+
 	UFUNCTION()
 	void DropItem();
 
