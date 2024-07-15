@@ -51,6 +51,11 @@ AAnimalIslandGameMode::AAnimalIslandGameMode()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to load GameOverWidgetClass"));
 	}
+	static ConstructorHelpers::FClassFinder<UGameOverMenu> GameoverWidgetHardRef(TEXT("/Game/UI/WB_GameOverMenuEasy.WB_GameOverMenuEasy_C"));
+	if (GameoverWidgetHardRef.Class)
+	{
+		GameoverWidgetHardClass = GameoverWidgetHardRef.Class;
+	}
 
 	static ConstructorHelpers::FObjectFinder<USoundCue> BgmSoundObject(TEXT("/Script/Engine.SoundCue'/Game/Assets/SFX/Bgm_Cue.Bgm_Cue'"));
 	if (nullptr != BgmSoundObject.Object)
@@ -109,6 +114,15 @@ void AAnimalIslandGameMode::BeginPlay()
 			GameoverWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
+	if (GameoverWidgetHardClass)
+	{
+		GameoverWidgetEasy = CreateWidget<UUserWidget>(GetWorld(), GameoverWidgetHardClass);
+		if (GameoverWidgetEasy)
+		{
+			GameoverWidgetEasy->AddToViewport();
+			GameoverWidgetEasy->SetVisibility(ESlateVisibility::Hidden);
+		}
+	}
 }
 
 void AAnimalIslandGameMode::Restart()
@@ -148,6 +162,7 @@ void AAnimalIslandGameMode::ViewSettingUI()
 
 void AAnimalIslandGameMode::ViewGameoverUI()
 {
+	
 	if(IsValid(GameoverWidget) && IsValid(MainWidget))
 	{
 		// 마우스 위치 해제 필요
@@ -167,7 +182,15 @@ void AAnimalIslandGameMode::ViewGameoverUI()
 		}
 
 		MainWidget->SetVisibility(ESlateVisibility::Hidden);
-		GameoverWidget->SetVisibility(ESlateVisibility::Visible);
+		
+		if (Cast<UGJGameInstance>(GetGameInstance())->bIsEasy)
+		{
+			GameoverWidgetEasy->SetVisibility(ESlateVisibility::Visible);
+		}
+		else
+		{
+			GameoverWidget->SetVisibility(ESlateVisibility::Visible);
+		}
 	}
 }
 

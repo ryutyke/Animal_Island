@@ -100,6 +100,9 @@ public:
 	uint8 bSpeedUp : 1;
 
 	UPROPERTY(BlueprintReadWrite)
+	uint8 bIsEasy : 1;
+
+	UPROPERTY(BlueprintReadWrite)
 	TObjectPtr<class UCharacterHUD> PlayerHUD;
 
 	UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = Cooltime)

@@ -94,6 +94,8 @@ AAnimalIslandCharacter::AAnimalIslandCharacter()
 	MouseSensitivity = 1.f;
 
 	Score = 0.0f;
+
+	bIsEasy = false;
 }
 
 void AAnimalIslandCharacter::Tick(float DeltaTime)
@@ -168,6 +170,11 @@ void AAnimalIslandCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
+	if(Cast<UGJGameInstance>(GetGameInstance())->bIsEasy)
+	{
+		bIsEasy = true;
+	}
+
 	//Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
 	{
@@ -187,7 +194,14 @@ void AAnimalIslandCharacter::CheckIsDead()
 	{
 		SetActorTickEnabled(false);
 		UE_LOG(LogTemp, Log, TEXT("GameOver"));
-		Cast<UGJGameInstance>(GetGameInstance())->BestScoreUpdate(Score);
+		if (bIsEasy)
+		{
+			Cast<UGJGameInstance>(GetGameInstance())->BestScoreUpdateEasy(Score);
+		}
+		else
+		{
+			Cast<UGJGameInstance>(GetGameInstance())->BestScoreUpdate(Score);
+		}
 		UGameplayStatics::PlaySound2D(this, DyingSound, CastChecked<UGJGameInstance>(GetWorld()->GetGameInstance())->SFXVolume);
 		AAnimalIslandGameMode* GameMode = Cast<AAnimalIslandGameMode>(GetWorld()->GetAuthGameMode());
 		if(GameMode)
