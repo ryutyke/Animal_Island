@@ -223,7 +223,7 @@ void AAnimal::DropItem()
 		{
 			GetWorld()->SpawnActor<AActor>(BlueItemBPClass, SpawnLocation, GetActorRotation());
 		}
-		else if (RandVar <= 7)
+		else if (RandVar <= 5)
 		{
 			GetWorld()->SpawnActor<AActor>(RedItemBPClass, SpawnLocation, GetActorRotation());
 		}
