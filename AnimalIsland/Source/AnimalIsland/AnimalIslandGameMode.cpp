@@ -51,10 +51,10 @@ AAnimalIslandGameMode::AAnimalIslandGameMode()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Failed to load GameOverWidgetClass"));
 	}
-	static ConstructorHelpers::FClassFinder<UGameOverMenu> GameoverWidgetHardRef(TEXT("/Game/UI/WB_GameOverMenuEasy.WB_GameOverMenuEasy_C"));
-	if (GameoverWidgetHardRef.Class)
+	static ConstructorHelpers::FClassFinder<UGameOverMenu> GameoverWidgetEasyRef(TEXT("/Game/UI/WB_GameOverMenuEasy.WB_GameOverMenuEasy_C"));
+	if (GameoverWidgetEasyRef.Class)
 	{
-		GameoverWidgetHardClass = GameoverWidgetHardRef.Class;
+		GameoverWidgetEasyClass = GameoverWidgetEasyRef.Class;
 	}
 
 	static ConstructorHelpers::FObjectFinder<USoundCue> BgmSoundObject(TEXT("/Script/Engine.SoundCue'/Game/Assets/SFX/Bgm_Cue.Bgm_Cue'"));
@@ -114,15 +114,17 @@ void AAnimalIslandGameMode::BeginPlay()
 			GameoverWidget->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
-	if (GameoverWidgetHardClass)
+	if (GameoverWidgetEasyClass)
 	{
-		GameoverWidgetEasy = CreateWidget<UUserWidget>(GetWorld(), GameoverWidgetHardClass);
+		GameoverWidgetEasy = CreateWidget<UUserWidget>(GetWorld(), GameoverWidgetEasyClass);
 		if (GameoverWidgetEasy)
 		{
 			GameoverWidgetEasy->AddToViewport();
 			GameoverWidgetEasy->SetVisibility(ESlateVisibility::Hidden);
 		}
 	}
+
+	AudioComponent->SetVolumeMultiplier(Cast<UGJGameInstance>(GetGameInstance())->BGMVolume);
 }
 
 void AAnimalIslandGameMode::Restart()

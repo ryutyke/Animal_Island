@@ -33,7 +33,7 @@ private:
 	UPROPERTY()
 	TSubclassOf<class UGameOverMenu> GameoverWidgetClass;
 	UPROPERTY()
-	TSubclassOf<class UGameOverMenu> GameoverWidgetHardClass;
+	TSubclassOf<class UGameOverMenu> GameoverWidgetEasyClass;
 
 public:
 	

@@ -106,7 +106,7 @@ void AAnimalIslandCharacter::Tick(float DeltaTime)
 	{
 		FeedCooltimeCnt -= DeltaTime;
 
-		if (bCoolTimeBuf) FeedCooltimeCnt = 0;
+		//if (bCoolTimeBuf) FeedCooltimeCnt = 0;
 		
 		if (FeedCooltimeCnt <= 0)
 		{
@@ -135,6 +135,15 @@ void AAnimalIslandCharacter::Tick(float DeltaTime)
 		{
 			bCoolTimeBuf = false;
 			CoolItemTimeCnt = 0.f;
+			
+			if (bIsEasy)
+			{
+				FeedCooltime = 2.0f;
+			}
+			else
+			{
+				FeedCooltime = 3.0f;
+			}
 		}
 	}
 }
@@ -153,7 +162,10 @@ void AAnimalIslandCharacter::Feed()
 		temp.Pitch = 0.0f;
 		temp.Roll = 0.0f;
 		SetActorRotation(temp);
-		GetWorld()->SpawnActor<AActor>(FeedBPClass, GetActorLocation(), GetActorRotation());
+
+		FVector SpawnLocation = GetActorLocation();
+		SpawnLocation.Z -= 30.0f;
+		GetWorld()->SpawnActor<AActor>(FeedBPClass, SpawnLocation, GetActorRotation());
 	}
 
 }
@@ -173,6 +185,7 @@ void AAnimalIslandCharacter::BeginPlay()
 	if(Cast<UGJGameInstance>(GetGameInstance())->bIsEasy)
 	{
 		bIsEasy = true;
+		FeedCooltime = 2.0f;
 	}
 
 	//Add Input Mapping Context

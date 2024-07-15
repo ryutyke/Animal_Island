@@ -7,6 +7,7 @@
 #include "Animal.h"
 #include "AnimalIslandGameMode.h"
 #include "GJGameInstance.h"
+#include "Feed.h"
 
 // Sets default values
 ALifeSpanWall::ALifeSpanWall()
@@ -59,6 +60,11 @@ void ALifeSpanWall::OnBeginOverlap(UPrimitiveComponent* OverlappedComponent, AAc
 		{
 			//UE_LOG(LogTemp, Warning, TEXT("Animal Destroy"));
 			HitAnimal->Destroy();
+		}
+		AFeed* HitFeed = Cast<AFeed>(OtherActor);
+		if (HitFeed != nullptr)
+		{
+			HitFeed->Destroy();
 		}
 	}
 
