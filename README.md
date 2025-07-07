@@ -2,7 +2,7 @@
 2024년에 넥슨 게임잼에서 언리얼 엔진으로 만든 게임입니다.
 Releases에서 게임 파일 설치 가능합니다.
 
-게임 영상 : [https://www.youtube.com/watch?v=JilkfSQLIYs](https://www.youtube.com/watch?v=JilkfSQLIYs)
+게임 영상 : [https://youtu.be/RWBtEyNgoOA?si=cPYkvlHNV_TPjeMW](https://youtu.be/RWBtEyNgoOA?si=cPYkvlHNV_TPjeMW)
 
 ## 게임의 장르 
 캐주얼, 슈팅, 3D 닷지
